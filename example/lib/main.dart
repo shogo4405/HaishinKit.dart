@@ -2,7 +2,13 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:haishin_kit/audio_source.dart';
 import 'package:haishin_kit/haishin_kit.dart';
+import 'package:haishin_kit/rtmp_connection.dart';
+import 'package:haishin_kit/rtmp_stream.dart';
+import 'package:haishin_kit/video_source.dart';
+
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +25,9 @@ class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   final _haishinKitPlugin = HaishinKit();
 
+  late RtmpConnection _connection;
+  late RtmpStream _stream;
+
   @override
   void initState() {
     super.initState();
@@ -32,10 +41,20 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await _haishinKitPlugin.getPlatformVersion() ?? 'Unknown platform version';
+          await _haishinKitPlugin.getVersion() ?? 'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
+
+    await Permission.camera.request();
+    await Permission.microphone.request();
+
+    _connection = await RtmpConnection.create();
+    _stream = await RtmpStream.create(_connection);
+    _stream.attachAudio(AudioSource());
+    _stream.attachVideo(VideoSource());
+    _connection.connect("rtmp://192.168.1.9/live");
+    _stream.publish("live");
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling

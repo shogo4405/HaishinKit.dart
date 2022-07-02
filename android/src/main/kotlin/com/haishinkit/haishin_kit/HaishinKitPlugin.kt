@@ -1,5 +1,7 @@
 package com.haishinkit.haishin_kit
 
+import android.content.Context
+import android.util.Log
 import androidx.annotation.NonNull
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -7,25 +9,39 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import com.haishinkit.rtmp.RtmpConnection
+import com.haishinkit.rtmp.RtmpStream
+import java.util.concurrent.ConcurrentHashMap
 
-/** HaishinKitPlugin */
 class HaishinKitPlugin: FlutterPlugin, MethodCallHandler {
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
-  private lateinit var channel : MethodChannel
+  lateinit var channel : MethodChannel
+  lateinit var context: Context
+
+  val rtmpStreamHandler = RtmpStreamHandler(this)
+  val rtmpConnectionHandler = RtmpConnectionHandler(this)
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "haishin_kit")
+    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "com.haishinkit")
     channel.setMethodCallHandler(this)
+    context = flutterPluginBinding.applicationContext
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
-    } else {
-      result.notImplemented()
+    if (call.method.startsWith("RtmpStream")) {
+      rtmpStreamHandler.onMethodCall(call, result)
+      return
+    }
+    if (call.method.startsWith("RtmpConnection")) {
+      rtmpConnectionHandler.onMethodCall(call, result)
+      return
+    }
+    when (call.method) {
+      "getVersion" -> {
+        result.success("0.10.0")
+      }
+      else -> {
+        result.notImplemented()
+      }
     }
   }
 
