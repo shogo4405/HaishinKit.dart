@@ -1,9 +1,9 @@
 PODS:
   - Flutter (1.0.0)
-  - haishin_kit (0.0.1):
+  - haishin_kit (0.9.0):
     - Flutter
-    - HaishinKit
-  - HaishinKit (1.2.4):
+    - HaishinKit (= 1.2.5)
+  - HaishinKit (1.2.5):
     - Logboard (~> 2.2.2)
   - Logboard (2.2.2)
   - permission_handler_apple (9.0.4):
@@ -29,8 +29,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  haishin_kit: 3709ffd8690a59c913390979151be00d333771ec
-  HaishinKit: a179c80e91ad68350a0405a68266b2199ca019b0
+  haishin_kit: 1a08f4e8f63c2e49038986ed269231dcb2b1e7bb
+  HaishinKit: c2fabe001db1bd2ded41cb38faddf4353d32e97a
   Logboard: 0ab6bbd984ed032b3f0b615cef06779a73445c80
   permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
 

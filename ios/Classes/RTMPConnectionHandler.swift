@@ -9,7 +9,7 @@ class RTMPConnectionHandler {
     init(plugin: SwiftHaishinKitPlugin) {
         self.plugin = plugin
     }
-    
+
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
         case "RtmpConnection#create":

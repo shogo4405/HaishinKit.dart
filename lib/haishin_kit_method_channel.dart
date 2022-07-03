@@ -1,14 +1,13 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'haishin_kit_platform_interface.dart';
 
+/// The method channel implementation of [HaishinKitPlatform]
 class MethodChannelHaishinKit extends HaishinKitPlatform {
-  @visibleForTesting
-  final methodChannel = const MethodChannel('com.haishinkit');
+  static const MethodChannel channel = MethodChannel('com.haishinkit');
 
   @override
   Future<String?> getVersion() async {
-    return await methodChannel.invokeMethod<String>('getVersion');
+    return await channel.invokeMethod<String>('getVersion');
   }
 }

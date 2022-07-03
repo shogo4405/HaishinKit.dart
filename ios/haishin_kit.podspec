@@ -1,17 +1,19 @@
+require 'yaml'
+pubspec = YAML.load_file(File.join('..', 'pubspec.yaml'))
+library_version = pubspec['version'].gsub('+', '-')
+
 Pod::Spec.new do |s|
-  s.name             = 'haishin_kit'
-  s.version          = '0.0.1'
-  s.summary          = 'HaishinKit Flutter plugin project.'
-  s.description      = <<-DESC
-  HaishinKit Flutter plugin project.
-  DESC
-  s.homepage         = 'https://github.com/shogo4405/HaishinKit.dart'
+  s.name             = pubspec['name']
+  s.version          = library_version
+  s.summary          = pubspec['description']
+  s.description      = pubspec['description']
+  s.homepage         = pubspec['homepage']
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'shogo4405' => 'shogo4405@gmail.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'HaishinKit'
+  s.dependency 'HaishinKit', '1.2.5'
   s.platform = :ios, '9.0'
 
   # Flutter.framework does not contain a i386 slice.

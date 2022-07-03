@@ -15,6 +15,18 @@ abstract class RtmpStreamPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  Future<void> setAudioSettings(Map<String, dynamic> params) {
+    throw UnimplementedError('setAudioSettings() has not been implemented.');
+  }
+
+  Future<void> setVideoSettings(Map<String, dynamic> params) {
+    throw UnimplementedError('setVideoSettings() has not been implemented.');
+  }
+
+  Future<void> setCaptureSettings(Map<String, dynamic> params) {
+    throw UnimplementedError('setCaptureSettings() has not been implemented.');
+  }
+
   Future<double?> create(Map<String, dynamic> params) {
     throw UnimplementedError('create() has not been implemented.');
   }
@@ -33,6 +45,10 @@ abstract class RtmpStreamPlatform extends PlatformInterface {
 
   Future<void> publish(Map<String, dynamic> params) {
     throw UnimplementedError('publish() has not been implemented.');
+  }
+
+  Future<int?> registerTexture(Map<String, dynamic> params) async {
+    throw UnimplementedError('registerTexture() has not been implemented.');
   }
 
   Future<void> close(Map<String, dynamic> params) {

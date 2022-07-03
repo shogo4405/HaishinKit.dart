@@ -1,15 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:haishin_kit/haishin_kit.dart';
-import 'package:haishin_kit/haishin_kit_platform_interface.dart';
 import 'package:haishin_kit/haishin_kit_method_channel.dart';
+import 'package:haishin_kit/haishin_kit_platform_interface.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-class MockHaishinKitPlatform 
+class MockHaishinKitPlatform
     with MockPlatformInterfaceMixin
     implements HaishinKitPlatform {
-
   @override
-  Future<String?> getPlatformVersion() => Future.value('42');
+  Future<String?> getVersion() => Future.value('42');
 }
 
 void main() {
@@ -23,7 +22,7 @@ void main() {
     HaishinKit haishinKitPlugin = HaishinKit();
     MockHaishinKitPlatform fakePlatform = MockHaishinKitPlatform();
     HaishinKitPlatform.instance = fakePlatform;
-  
-    expect(await haishinKitPlugin.getPlatformVersion(), '42');
+
+    expect(await haishinKitPlugin.getVersion(), '42');
   });
 }

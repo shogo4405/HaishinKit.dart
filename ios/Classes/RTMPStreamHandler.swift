@@ -30,7 +30,7 @@ class RTMPStreamHandler {
                 return
             }
             let source = arguments["source"] as? [String: Any?]
-            if (source == nil) {
+            if source == nil {
                 instances[memory.doubleValue]?.attachAudio(nil)
             } else {
                 instances[memory.doubleValue]?.attachAudio(AVCaptureDevice.default(for: .audio))
@@ -42,7 +42,7 @@ class RTMPStreamHandler {
                 return
             }
             let source = arguments["source"] as? [String: Any?]
-            if (source == nil) {
+            if source == nil {
                 instances[memory.doubleValue]?.attachCamera(nil)
             } else {
                 instances[memory.doubleValue]?.attachCamera(DeviceUtil.device(withPosition: .back))
@@ -61,6 +61,17 @@ class RTMPStreamHandler {
                 return
             }
             instances[memory.doubleValue]?.publish(arguments["name"] as? String)
+        case "RtmpStream#registerTexture":
+            guard
+                let arguments = call.arguments as? [String: Any?],
+                let memory = arguments["memory"] as? NSNumber,
+                let stream = instances[memory.doubleValue],
+                let registry = plugin.registrar?.textures() else {
+                return
+            }
+            let texture = NetStreamDrawableTexture(registry: registry)
+            texture.attachStream(stream)
+            result(texture.id)
         default:
             result(FlutterMethodNotImplemented)
         }

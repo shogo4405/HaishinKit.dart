@@ -16,6 +16,44 @@
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		BC781CDE287259FB00DE3021 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC781CD5287259FB00DE3021 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CA1E3A7C1A102CDB24E87395BDB47E78;
+			remoteInfo = haishin_kit;
+		};
+		BC781CE0287259FB00DE3021 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC781CD5287259FB00DE3021 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 25BFFBE6D90519C6BE2EBFA4D388AED0;
+			remoteInfo = HaishinKit;
+		};
+		BC781CE2287259FB00DE3021 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC781CD5287259FB00DE3021 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BBF3C907BB548DD1552305E79C7836C3;
+			remoteInfo = Logboard;
+		};
+		BC781CE4287259FB00DE3021 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC781CD5287259FB00DE3021 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C7AD28D5FB25A8DEDF61F78996932FA6;
+			remoteInfo = permission_handler_apple;
+		};
+		BC781CE6287259FB00DE3021 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC781CD5287259FB00DE3021 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 669E8F25E1897672BDB80B7EB784DA24;
+			remoteInfo = "Pods-Runner";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -46,6 +84,7 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A0C76D7373B94EC8C7043E0E /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		BC781CD5287259FB00DE3021 /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = Pods/Pods.xcodeproj; sourceTree = "<group>"; };
 		E0584F6228D6ED82E1F6F510 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -65,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				18AF6BBFFF3D443DC5ADB5F0 /* Pods_Runner.framework */,
+				BC781CD5287259FB00DE3021 /* Pods.xcodeproj */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -124,6 +164,18 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		BC781CD6287259FB00DE3021 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BC781CDF287259FB00DE3021 /* haishin_kit */,
+				BC781CE1287259FB00DE3021 /* HaishinKit */,
+				BC781CE3287259FB00DE3021 /* Logboard */,
+				BC781CE5287259FB00DE3021 /* permission_handler_apple */,
+				BC781CE7287259FB00DE3021 /* Pods-Runner */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -175,12 +227,61 @@
 			mainGroup = 97C146E51CF9000F007C117D;
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BC781CD6287259FB00DE3021 /* Products */;
+					ProjectRef = BC781CD5287259FB00DE3021 /* Pods.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BC781CDF287259FB00DE3021 /* haishin_kit */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = haishin_kit;
+			path = haishin_kit.framework;
+			remoteRef = BC781CDE287259FB00DE3021 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BC781CE1287259FB00DE3021 /* HaishinKit */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = HaishinKit;
+			path = HaishinKit.framework;
+			remoteRef = BC781CE0287259FB00DE3021 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BC781CE3287259FB00DE3021 /* Logboard */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = Logboard;
+			path = Logboard.framework;
+			remoteRef = BC781CE2287259FB00DE3021 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BC781CE5287259FB00DE3021 /* permission_handler_apple */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = permission_handler_apple;
+			path = permission_handler_apple.framework;
+			remoteRef = BC781CE4287259FB00DE3021 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		BC781CE7287259FB00DE3021 /* Pods-Runner */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = "Pods-Runner";
+			path = Pods_Runner.framework;
+			remoteRef = BC781CE6287259FB00DE3021 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		97C146EC1CF9000F007C117D /* Resources */ = {
