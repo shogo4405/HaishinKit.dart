@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 
 import 'net_stream.dart';
 
-class NetStreamDrawableView extends StatefulWidget {
-  const NetStreamDrawableView(this.textureId, {Key? key}) : super(key: key);
+class NetStreamDrawableTexture extends StatefulWidget {
+  const NetStreamDrawableTexture(this.textureId, {Key? key}) : super(key: key);
 
   final int? textureId;
 
@@ -13,7 +13,7 @@ class NetStreamDrawableView extends StatefulWidget {
   State<StatefulWidget> createState() => NetStreamDrawableState();
 }
 
-class NetStreamDrawableState extends State<NetStreamDrawableView> {
+class NetStreamDrawableState extends State<NetStreamDrawableTexture> {
   late _NetStreamDrawableController _controller;
 
   @override

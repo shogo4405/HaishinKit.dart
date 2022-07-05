@@ -18,8 +18,10 @@ abstract class NetStream {
   /// Specifies stream AVSession properties.
   set captureSettings(CaptureSettings captureSettings);
 
+  /// Attaches an AudioSource to this stream.
   Future<void> attachAudio(AudioSource? audio);
 
+  /// Attaches an VideoSource to this stream.
   Future<void> attachVideo(VideoSource? video);
 
   Future<int?> registerTexture();

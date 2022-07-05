@@ -6,6 +6,26 @@
 |----------------|---------|----------|
 | **Support**    | SDK 21+ | iOS 9.0+ |
 
+# 🌏 Dependencies
+Project name    |Notes       |License
+----------------|------------|--------------
+[HaishinKit for iOS, macOS and tvOS.](https://github.com/shogo4405/HaishinKit.swift)|Camera and Microphone streaming library via RTMP, HLS for iOS, macOS and tvOS.|[BSD 3-Clause "New" or "Revised" License](https://github.com/shogo4405/HaishinKit.swift/blob/master/LICENSE.md)
+[HaishinKit for Android.](https://github.com/shogo4405/HaishinKit.kt)|Camera and Microphone streaming library via RTMP for Android.|[BSD 3-Clause "New" or "Revised" License](https://github.com/shogo4405/HaishinKit.kt/blob/master/LICENSE.md)
+
+## 🎨 Features
+### RTMP
+- [x] Authentication
+- [x] Publish and Recording (H264/AAC)
+- [x] _Playback (Beta)_
+- [x] Adaptive bitrate streaming
+  - [x] Automatic drop frames
+- [ ] Action Message Format
+  - [x] AMF0
+  - [ ] AMF3
+- [x] SharedObject
+- [x] RTMPS
+  - [x] Native (RTMP over SSL/TLS)
+
 # 🐾 Example
 Here is a small example flutter app displaying a camera preview.
 ```dart

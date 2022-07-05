@@ -43,7 +43,7 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
         }
         when (call.method) {
             "getVersion" -> {
-                result.success("0.10.1")
+                result.success(com.haishinkit.BuildConfig.VERSION_NAME)
             }
             else -> {
                 result.notImplemented()

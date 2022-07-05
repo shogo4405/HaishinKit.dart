@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:haishin_kit/audio_source.dart';
-import 'package:haishin_kit/net_stream_drawable_view.dart';
+import 'package:haishin_kit/net_stream_drawable_texture.dart';
 import 'package:haishin_kit/rtmp_connection.dart';
 import 'package:haishin_kit/rtmp_stream.dart';
 import 'package:haishin_kit/video_source.dart';
@@ -60,7 +60,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: NetStreamDrawableView(_texureId,
+          child: NetStreamDrawableTexture(_texureId,
               key: netStreamDrawableViewStateKey),
         ),
         floatingActionButton: FloatingActionButton(

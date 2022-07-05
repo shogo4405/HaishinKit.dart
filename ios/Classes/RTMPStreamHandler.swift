@@ -23,6 +23,45 @@ class RTMPStreamHandler {
             let count = Double(instances.count)
             instances[count] = RTMPStream(connection: connection)
             result(NSNumber(value: count))
+        case "RtmpStream#setAudioSettings":
+            guard
+                let arguments = call.arguments as? [String: Any?],
+                let memory = arguments["memory"] as? NSNumber,
+                let stream = instances[memory.doubleValue] as? RTMPStream,
+                let settings = arguments["settings"] as? [String: Any?] else {
+                return
+            }
+            if let muted = settings["muted"] as? Bool {
+                stream.audioSettings[.muted] = muted
+            }
+            if let bitrate = settings["bitrate"] as? NSNumber {
+                stream.audioSettings[.bitrate] = bitrate.intValue
+            }
+            result(nil)
+        case "RtmpStream#setVideoSettings":
+            guard
+                let arguments = call.arguments as? [String: Any?],
+                let memory = arguments["memory"] as? NSNumber,
+                let stream = instances[memory.doubleValue] as? RTMPStream,
+                let settings = arguments["settings"] as? [String: Any?] else {
+                return
+            }
+            if let muted = settings["muted"] as? Bool {
+                stream.videoSettings[.muted] = muted
+            }
+            if let bitrate = settings["bitrate"] as? NSNumber {
+                stream.videoSettings[.bitrate] = bitrate.intValue
+            }
+            if let width = settings["width"] as? NSNumber {
+                stream.videoSettings[.width] = width.intValue
+            }
+            if let height = settings["height"] as? NSNumber {
+                stream.videoSettings[.height] = height.intValue
+            }
+            if let frameInterval = settings["frameInterval"] as? NSNumber {
+                stream.videoSettings[.maxKeyFrameIntervalDuration] = frameInterval.intValue
+            }
+            result(nil)
         case "RtmpStream#attachAudio":
             guard
                 let arguments = call.arguments as? [String: Any?],
@@ -35,6 +74,7 @@ class RTMPStreamHandler {
             } else {
                 instances[memory.doubleValue]?.attachAudio(AVCaptureDevice.default(for: .audio))
             }
+            result(nil)
         case "RtmpStream#attachVideo":
             guard
                 let arguments = call.arguments as? [String: Any?],
@@ -47,6 +87,7 @@ class RTMPStreamHandler {
             } else {
                 instances[memory.doubleValue]?.attachCamera(DeviceUtil.device(withPosition: .back))
             }
+            result(nil)
         case "RtmpStream#play":
             guard
                 let arguments = call.arguments as? [String: Any?],
@@ -61,6 +102,7 @@ class RTMPStreamHandler {
                 return
             }
             instances[memory.doubleValue]?.publish(arguments["name"] as? String)
+            result(nil)
         case "RtmpStream#registerTexture":
             guard
                 let arguments = call.arguments as? [String: Any?],

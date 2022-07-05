@@ -2,7 +2,6 @@ package com.haishinkit.haishin_kit
 
 import android.content.Context
 import android.view.View
-import com.haishinkit.view.HkSurfaceView
 import com.haishinkit.view.HkTextureView
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall

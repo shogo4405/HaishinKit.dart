@@ -29,6 +29,7 @@ class RtmpStream extends NetStream {
 
   VideoSettings get videoSettings => _videoSettings;
 
+  @override
   set videoSettings(VideoSettings videoSettings) {
     assert(_memory != null);
     _videoSettings = videoSettings;
@@ -70,7 +71,7 @@ class RtmpStream extends NetStream {
         .attachVideo({"memory": _memory, "source": video?.toMap()});
   }
 
-  /// Sends streaming audio, vidoe and data message from client.
+  /// Sends streaming audio, video and data message from client.
   Future<void> publish(String name) async {
     assert(_memory != null);
     RtmpStreamPlatform.instance.publish({"memory": _memory, "name": name});

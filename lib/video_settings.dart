@@ -3,7 +3,7 @@ class VideoSettings {
   int width;
   int height;
   int bitrate;
-  int maxKeyFrameIntervalDuration;
+  int frameInterval;
 
 //<editor-fold desc="Data Methods">
 
@@ -12,7 +12,7 @@ class VideoSettings {
     this.width = 480,
     this.height = 272,
     this.bitrate = 160 * 1000,
-    this.maxKeyFrameIntervalDuration = 2,
+    this.frameInterval = 2,
   });
 
   @override
@@ -24,7 +24,7 @@ class VideoSettings {
           width == other.width &&
           height == other.height &&
           bitrate == other.bitrate &&
-          maxKeyFrameIntervalDuration == other.maxKeyFrameIntervalDuration);
+          frameInterval == other.frameInterval);
 
   @override
   int get hashCode =>
@@ -32,7 +32,7 @@ class VideoSettings {
       width.hashCode ^
       height.hashCode ^
       bitrate.hashCode ^
-      maxKeyFrameIntervalDuration.hashCode;
+      frameInterval.hashCode;
 
   @override
   String toString() {
@@ -41,7 +41,7 @@ class VideoSettings {
         ' width: $width,' +
         ' height: $height,' +
         ' bitrate: $bitrate,' +
-        ' maxKeyFrameIntervalDuration: $maxKeyFrameIntervalDuration,' +
+        ' frameInterval: $frameInterval,' +
         '}';
   }
 
@@ -50,15 +50,14 @@ class VideoSettings {
     int? width,
     int? height,
     int? bitrate,
-    int? maxKeyFrameIntervalDuration,
+    int? frameInterval,
   }) {
     return VideoSettings(
       muted: muted ?? this.muted,
       width: width ?? this.width,
       height: height ?? this.height,
       bitrate: bitrate ?? this.bitrate,
-      maxKeyFrameIntervalDuration:
-          maxKeyFrameIntervalDuration ?? this.maxKeyFrameIntervalDuration,
+      frameInterval: frameInterval ?? this.frameInterval,
     );
   }
 
@@ -68,7 +67,7 @@ class VideoSettings {
       'width': this.width,
       'height': this.height,
       'bitrate': this.bitrate,
-      'maxKeyFrameIntervalDuration': this.maxKeyFrameIntervalDuration,
+      'frameInterval': this.frameInterval,
     };
   }
 
@@ -78,7 +77,7 @@ class VideoSettings {
       width: map['width'] as int,
       height: map['height'] as int,
       bitrate: map['bitrate'] as int,
-      maxKeyFrameIntervalDuration: map['maxKeyFrameIntervalDuration'] as int,
+      frameInterval: map['frameInterval'] as int,
     );
   }
 
