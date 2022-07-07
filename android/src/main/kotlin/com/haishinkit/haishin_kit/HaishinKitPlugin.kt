@@ -1,7 +1,9 @@
 package com.haishinkit.haishin_kit
 
-import android.content.Context
+import android.os.Build
 import androidx.annotation.NonNull
+import com.haishinkit.graphics.PixelTransformFactory
+import com.haishinkit.vulkan.VkPixelTransform
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -11,25 +13,17 @@ import io.flutter.plugin.common.MethodChannel.Result
 class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
     companion object {
         private const val CHANNEL_NAME = "com.haishinkit"
-        private const val VIEW_TYPE_ID = "plugins.haishinkit.com/netstreamdrawablebiew"
     }
 
     lateinit var channel: MethodChannel
-    lateinit var context: Context
-
+    lateinit var flutterPluginBinding: FlutterPlugin.FlutterPluginBinding
     val rtmpStreamHandler = RtmpStreamHandler(this)
     val rtmpConnectionHandler = RtmpConnectionHandler(this)
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        flutterPluginBinding.platformViewRegistry
-            .registerViewFactory(
-                VIEW_TYPE_ID,
-                FlutterNetStreamDrawableFactory(this, flutterPluginBinding.binaryMessenger)
-            )
-
+        this.flutterPluginBinding = flutterPluginBinding
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, CHANNEL_NAME)
         channel.setMethodCallHandler(this)
-        context = flutterPluginBinding.applicationContext
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {

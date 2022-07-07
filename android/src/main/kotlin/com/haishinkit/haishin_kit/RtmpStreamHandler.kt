@@ -55,7 +55,7 @@ class RtmpStreamHandler(private val plugin: HaishinKitPlugin) : MethodChannel.Me
                 if (source == null) {
                     instances[call.argument("memory")]?.attachAudio(null)
                 } else {
-                    instances[call.argument("memory")]?.attachAudio(AudioRecordSource(plugin.context))
+                    instances[call.argument("memory")]?.attachAudio(AudioRecordSource(plugin.flutterPluginBinding.applicationContext))
                 }
                 result.success(null)
             }
@@ -64,14 +64,18 @@ class RtmpStreamHandler(private val plugin: HaishinKitPlugin) : MethodChannel.Me
                 if (source == null) {
                     instances[call.argument("memory")]?.attachVideo(null)
                 } else {
-                    val source = Camera2Source(plugin.context)
+                    val source = Camera2Source(plugin.flutterPluginBinding.applicationContext)
                     source.open(0)
                     instances[call.argument("memory")]?.attachVideo(source)
                 }
                 result.success(null)
             }
             "RtmpStream#registerTexture" -> {
-                result.success(0)
+                val texture = NetStreamDrawableTexture(plugin.flutterPluginBinding)
+                instances[call.argument("memory")]?.let {
+                    texture.attachStream(it)
+                }
+                result.success(texture.id)
             }
             "RtmpStream#publish" -> {
                 instances[call.argument("memory")]?.publish(call.argument("name"))

@@ -25,9 +25,6 @@ class _MyAppState extends State<MyApp> {
   late RtmpStream _stream;
   int? _texureId;
 
-  GlobalKey<NetStreamDrawableState> netStreamDrawableViewStateKey =
-      GlobalKey<NetStreamDrawableState>();
-
   @override
   void initState() {
     super.initState();
@@ -57,7 +54,6 @@ class _MyAppState extends State<MyApp> {
 
     setState(() {
       _texureId = textureId;
-      netStreamDrawableViewStateKey.currentState?.attachStream(_stream);
     });
   }
 
@@ -69,8 +65,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: NetStreamDrawableTexture(_texureId,
-              key: netStreamDrawableViewStateKey),
+          child: NetStreamDrawableTexture(_texureId),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
