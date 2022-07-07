@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:haishin_kit/audio_source.dart';
 import 'package:haishin_kit/net_stream_drawable_texture.dart';
@@ -37,6 +38,14 @@ class _MyAppState extends State<MyApp> {
     await Permission.camera.request();
     await Permission.microphone.request();
 
+    // Set up AVAudioSession for iOS.
+    final session = await AudioSession.instance;
+    await session.configure(const AudioSessionConfiguration(
+      avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
+      avAudioSessionCategoryOptions:
+          AVAudioSessionCategoryOptions.allowBluetooth,
+    ));
+
     _connection = await RtmpConnection.create();
     _stream = await RtmpStream.create(_connection);
     _stream.attachAudio(AudioSource());
@@ -48,7 +57,7 @@ class _MyAppState extends State<MyApp> {
 
     setState(() {
       _texureId = textureId;
-      // netStreamDrawableViewStateKey.currentState?.attachStream(_stream);
+      netStreamDrawableViewStateKey.currentState?.attachStream(_stream);
     });
   }
 

@@ -21,7 +21,6 @@ class RtmpStreamHandler(private val plugin: HaishinKitPlugin) : MethodChannel.Me
                     )
                     result.success(size)
                 }
-                result.success(null)
             }
             "RtmpStream#setAudioSettings" -> {
                 val source = call.argument<Map<String, Any?>>("settings") ?: return
@@ -70,6 +69,9 @@ class RtmpStreamHandler(private val plugin: HaishinKitPlugin) : MethodChannel.Me
                     instances[call.argument("memory")]?.attachVideo(source)
                 }
                 result.success(null)
+            }
+            "RtmpStream#registerTexture" -> {
+                result.success(0)
             }
             "RtmpStream#publish" -> {
                 instances[call.argument("memory")]?.publish(call.argument("name"))
