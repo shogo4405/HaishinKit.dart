@@ -24,6 +24,7 @@ class _MyAppState extends State<MyApp> {
   RtmpConnection? _connection;
   RtmpStream? _stream;
   bool _recording = false;
+  CameraPosition currentPosition = CameraPosition.back;
 
   @override
   void initState() {
@@ -56,7 +57,7 @@ class _MyAppState extends State<MyApp> {
     });
     RtmpStream stream = await RtmpStream.create(connection);
     stream.attachAudio(AudioSource());
-    stream.attachVideo(VideoSource());
+    stream.attachVideo(VideoSource(position: currentPosition));
 
     if (!mounted) return;
 
@@ -70,9 +71,19 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
+        appBar: AppBar(title: const Text('HaishinKit example app'), actions: [
+          IconButton(
+            icon: const Icon(Icons.flip_camera_android),
+            onPressed: () {
+              if (currentPosition == CameraPosition.front) {
+                currentPosition = CameraPosition.back;
+              } else {
+                currentPosition = CameraPosition.front;
+              }
+              _stream?.attachVideo(VideoSource(position: currentPosition));
+            },
+          )
+        ]),
         body: Center(
           child: _stream == null
               ? const Text("")

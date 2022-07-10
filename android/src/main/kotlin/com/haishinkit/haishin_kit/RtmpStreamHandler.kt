@@ -1,5 +1,6 @@
 package com.haishinkit.haishin_kit
 
+import android.hardware.camera2.CameraCharacteristics
 import android.util.Size
 import com.haishinkit.event.Event
 import com.haishinkit.event.IEventListener
@@ -23,6 +24,7 @@ class RtmpStreamHandler(
     var instance: RtmpStream? = null
     private var channel: EventChannel
     private var eventSink: EventChannel.EventSink? = null
+    private var camera = Camera2Source(plugin.flutterPluginBinding.applicationContext)
 
     init {
         handler?.instance?.let {
@@ -77,9 +79,19 @@ class RtmpStreamHandler(
                 if (source == null) {
                     instance?.attachVideo(null)
                 } else {
-                    val source = Camera2Source(plugin.flutterPluginBinding.applicationContext)
-                    source.open(0)
-                    instance?.attachVideo(source)
+                    var index = 0
+                    when (source["position"] as? String) {
+                        "front" -> {
+                            index = CameraCharacteristics.LENS_FACING_FRONT
+                        }
+                        "back" -> {
+                            index = CameraCharacteristics.LENS_FACING_BACK
+                        }
+                    }
+                    instance?.attachVideo(camera)
+                    if (instance?.drawable != null) {
+                        camera.open(index)
+                    }
                 }
                 result.success(null)
             }
@@ -88,6 +100,9 @@ class RtmpStreamHandler(
                 if (netStream?.drawable == null) {
                     val texture = NetStreamDrawableTexture(plugin.flutterPluginBinding)
                     texture.attachStream(netStream)
+                    if (camera.stream != null) {
+                        camera.open()
+                    }
                     result.success(texture.id)
                 } else {
                     val texture = (netStream.drawable as? NetStreamDrawableTexture)

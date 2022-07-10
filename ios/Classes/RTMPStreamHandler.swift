@@ -79,7 +79,18 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
             if source == nil {
                 instance?.attachCamera(nil)
             } else {
-                instance?.attachCamera(DeviceUtil.device(withPosition: .back))
+                var devicePosition = AVCaptureDevice.Position.back
+                if let position = source?["position"] as? String {
+                    switch (position) {
+                    case "front":
+                        devicePosition = .front
+                    case "back":
+                        devicePosition = .back
+                    default:
+                        break
+                    }
+                }
+                instance?.attachCamera(DeviceUtil.device(withPosition: devicePosition))
             }
             result(nil)
         case "RtmpStream#play":
