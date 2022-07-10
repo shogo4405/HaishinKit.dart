@@ -1,11 +1,9 @@
 package com.haishinkit.haishin_kit
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import android.util.Size
 import android.view.Surface
-import android.view.WindowManager
 import com.haishinkit.graphics.ImageOrientation
 import com.haishinkit.graphics.PixelTransform
 import com.haishinkit.graphics.PixelTransformFactory
@@ -51,6 +49,13 @@ class NetStreamDrawableTexture(binding: FlutterPlugin.FlutterPluginBinding) :
     val id: Long
         get() = entry?.id() ?: 0
 
+    var imageExtent: Size
+        get() = pixelTransform.imageExtent
+        set(value) {
+            pixelTransform.imageExtent = value
+            entry?.surfaceTexture()?.setDefaultBufferSize(value.width, value.height)
+        }
+
     private val pixelTransform: PixelTransform by lazy {
         PixelTransformFactory().create()
     }
@@ -67,8 +72,6 @@ class NetStreamDrawableTexture(binding: FlutterPlugin.FlutterPluginBinding) :
     init {
         val entry = binding.textureRegistry.createSurfaceTexture()
         pixelTransform.assetManager = binding.applicationContext.assets
-        pixelTransform.imageExtent = Size(1600, 900)
-        entry.surfaceTexture().setDefaultBufferSize(1600, 900)
         pixelTransform.outputSurface = Surface(entry.surfaceTexture())
         this.entry = entry
     }

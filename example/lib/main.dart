@@ -21,9 +21,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late RtmpConnection _connection;
-  late RtmpStream _stream;
-  int? _texureId;
+  RtmpConnection? _connection;
+  RtmpStream? _stream;
 
   @override
   void initState() {
@@ -43,17 +42,15 @@ class _MyAppState extends State<MyApp> {
           AVAudioSessionCategoryOptions.allowBluetooth,
     ));
 
-    _connection = await RtmpConnection.create();
-    _stream = await RtmpStream.create(_connection);
-    _stream.attachAudio(AudioSource());
-    _stream.attachVideo(VideoSource());
-
-    int? textureId = await _stream.registerTexture();
+    RtmpConnection connection = await RtmpConnection.create();
+    RtmpStream stream = await RtmpStream.create(connection);
+    stream.attachAudio(AudioSource());
 
     if (!mounted) return;
 
     setState(() {
-      _texureId = textureId;
+      _connection = connection;
+      _stream = stream;
     });
   }
 
@@ -65,12 +62,12 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: NetStreamDrawableTexture(_texureId),
+          child: _stream == null ? const Text("") : NetStreamDrawableTexture(_stream),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            _connection.connect("rtmp://192.168.1.9/live");
-            _stream.publish("live");
+            _connection?.connect("rtmp://192.168.1.9/live");
+            _stream?.publish("live");
           },
         ),
       ),

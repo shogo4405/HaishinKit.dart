@@ -1,5 +1,6 @@
 package com.haishinkit.haishin_kit
 
+import android.util.Size
 import com.haishinkit.media.AudioRecordSource
 import com.haishinkit.media.Camera2Source
 import com.haishinkit.rtmp.RtmpStream
@@ -71,11 +72,19 @@ class RtmpStreamHandler(private val plugin: HaishinKitPlugin) : MethodChannel.Me
                 result.success(null)
             }
             "RtmpStream#registerTexture" -> {
-                val texture = NetStreamDrawableTexture(plugin.flutterPluginBinding)
-                instances[call.argument("memory")]?.let {
-                    texture.attachStream(it)
+                val netStream = instances[call.argument("memory")]
+                if (netStream?.drawable == null) {
+                    val texture = NetStreamDrawableTexture(plugin.flutterPluginBinding)
+                    texture.attachStream(netStream)
+                    result.success(texture.id)
+                } else {
+                    val texture = (netStream.drawable as? NetStreamDrawableTexture)
+                    val width = call.argument<Double>("width") ?: 0
+                    val height = call.argument<Double>("height") ?: 0
+                    texture?.imageExtent =
+                        Size(width.toInt(), height.toInt())
+                    result.success(texture?.id)
                 }
-                result.success(texture.id)
             }
             "RtmpStream#publish" -> {
                 instances[call.argument("memory")]?.publish(call.argument("name"))

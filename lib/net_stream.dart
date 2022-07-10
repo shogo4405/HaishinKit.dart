@@ -24,7 +24,7 @@ abstract class NetStream {
   /// Attaches an VideoSource to this stream.
   Future<void> attachVideo(VideoSource? video);
 
-  Future<int?> registerTexture();
+  Future<int?> registerTexture(Map<String, dynamic> params);
 
   /// Stops playing or publishing and makes available other uses.
   Future<void> close();

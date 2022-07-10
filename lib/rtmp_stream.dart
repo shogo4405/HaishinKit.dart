@@ -84,9 +84,10 @@ class RtmpStream extends NetStream {
   }
 
   @override
-  Future<int?> registerTexture() async {
+  Future<int?> registerTexture(Map<String, dynamic> params) async {
     assert(_memory != null);
-    return RtmpStreamPlatform.instance.registerTexture({"memory": _memory});
+    params["memory"] = _memory;
+    return RtmpStreamPlatform.instance.registerTexture(params);
   }
 
   @override
