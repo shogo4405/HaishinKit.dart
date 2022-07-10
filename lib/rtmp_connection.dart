@@ -1,9 +1,10 @@
+import 'package:haishin_kit/haishin_kit_platform_interface.dart';
 import 'package:haishin_kit/rtmp_connection_platform_interface.dart';
 
 class RtmpConnection {
   static Future<RtmpConnection> create() async {
     var object = RtmpConnection._();
-    object._memory = await RtmpConnectionPlatform.instance.create();
+    object._memory = await HaishinKitPlatform.instance.newRtmpConnection();
     return object;
   }
 

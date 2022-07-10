@@ -14,11 +14,7 @@ abstract class RtmpConnectionPlatform extends PlatformInterface {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
   }
-
-  Future<int?> create() {
-    throw UnimplementedError('create() has not been implemented.');
-  }
-
+  
   Future<void> connect(Map<String, dynamic> params) {
     throw UnimplementedError('connect() has not been implemented.');
   }

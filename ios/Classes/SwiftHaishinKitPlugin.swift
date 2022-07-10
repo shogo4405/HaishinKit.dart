@@ -11,24 +11,39 @@ public class SwiftHaishinKitPlugin: NSObject, FlutterPlugin {
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
 
-    var registrar: FlutterPluginRegistrar? = nil
-    lazy var rtmpStreamHandler = RTMPStreamHandler(plugin: self)
-    lazy var rtmpConnectionHandler = RTMPConnectionHandler(plugin: self)
+    var registrar: FlutterPluginRegistrar?
+    private var handlers: [Int: MethodCallHandler] = [:]
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        if call.method.contains("RtmpStream") {
-            rtmpStreamHandler.handle(call, result: result)
-            return
-        }
-        if call.method.contains("RtmpConnection") {
-            rtmpConnectionHandler.handle(call, result: result)
+        if let memory = (call.arguments as? [String: Any?])?["memory"] as? NSNumber {
+            if let handler = handlers[memory.intValue] {
+                handler.handle(call, result: result)
+            } else {
+                result(FlutterMethodNotImplemented)
+            }
             return
         }
         switch call.method {
+        case "newRtmpConnection":
+            let memory = handlers.count
+            handlers[memory] = RTMPConnectionHandler(plugin: self, id: memory)
+            result(NSNumber(value: memory))
+        case "newRtmpStream":
+            if let conneciton = (call.arguments as? [String: Any?])?["connection"] as? NSNumber {
+                if let handler = handlers[conneciton.intValue] as? RTMPConnectionHandler {
+                    let memory = handlers.count
+                    handlers[memory] = RTMPStreamHandler(plugin: self, id: memory, handler: handler)
+                    result(NSNumber(value: memory))
+                }
+            }
         case "getVersion":
-            result("1.2.4")
+            result(HaishinKitVersionNumber)
         default:
             result(FlutterMethodNotImplemented)
         }
+    }
+
+    func onDispose(id: Int) {
+        handlers.removeValue(forKey: id)
     }
 }

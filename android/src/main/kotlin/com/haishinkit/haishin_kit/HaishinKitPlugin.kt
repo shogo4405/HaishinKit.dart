@@ -1,24 +1,25 @@
 package com.haishinkit.haishin_kit
 
-import android.os.Build
 import androidx.annotation.NonNull
-import com.haishinkit.graphics.PixelTransformFactory
-import com.haishinkit.vulkan.VkPixelTransform
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import java.util.concurrent.ConcurrentHashMap
 
 class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
     companion object {
         private const val CHANNEL_NAME = "com.haishinkit"
     }
 
-    lateinit var channel: MethodChannel
     lateinit var flutterPluginBinding: FlutterPlugin.FlutterPluginBinding
-    val rtmpStreamHandler = RtmpStreamHandler(this)
-    val rtmpConnectionHandler = RtmpConnectionHandler(this)
+    private lateinit var channel: MethodChannel
+    private var handlers = ConcurrentHashMap<Int, MethodCallHandler>()
+
+    fun onDispose(id: Int) {
+        handlers.remove(id)
+    }
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         this.flutterPluginBinding = flutterPluginBinding
@@ -27,15 +28,29 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-        if (call.method.startsWith("RtmpStream")) {
-            rtmpStreamHandler.onMethodCall(call, result)
-            return
-        }
-        if (call.method.startsWith("RtmpConnection")) {
-            rtmpConnectionHandler.onMethodCall(call, result)
+        val memory = call.argument<Int>("memory")
+        if (memory != null) {
+            val handler = handlers[memory]
+            if (handler != null) {
+                handler.onMethodCall(call, result)
+            } else {
+                result.notImplemented()
+            }
             return
         }
         when (call.method) {
+            "newRtmpConnection" -> {
+                val id = handlers.size
+                handlers[id] = RtmpConnectionHandler(this, id)
+                result.success(id)
+            }
+            "newRtmpStream" -> {
+                val connection = call.argument<Int>("connection")
+                val id = handlers.size
+                handlers[id] =
+                    RtmpStreamHandler(this, id, handlers[connection] as? RtmpConnectionHandler)
+                result.success(id)
+            }
             "getVersion" -> {
                 result.success(com.haishinkit.BuildConfig.VERSION_NAME)
             }

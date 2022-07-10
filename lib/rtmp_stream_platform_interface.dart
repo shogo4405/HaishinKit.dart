@@ -27,10 +27,6 @@ abstract class RtmpStreamPlatform extends PlatformInterface {
     throw UnimplementedError('setCaptureSettings() has not been implemented.');
   }
 
-  Future<int?> create(Map<String, dynamic> params) {
-    throw UnimplementedError('create() has not been implemented.');
-  }
-
   Future<void> attachAudio(Map<String, dynamic> params) {
     throw UnimplementedError('attachAudio() has not been implemented.');
   }

@@ -1,4 +1,5 @@
 import 'package:haishin_kit/audio_source.dart';
+import 'package:haishin_kit/haishin_kit_platform_interface.dart';
 import 'package:haishin_kit/net_stream.dart';
 import 'package:haishin_kit/rtmp_connection.dart';
 import 'package:haishin_kit/rtmp_stream_platform_interface.dart';
@@ -11,8 +12,8 @@ import 'capture_settings.dart';
 class RtmpStream extends NetStream {
   static Future<RtmpStream> create(RtmpConnection connection) async {
     var object = RtmpStream._();
-    final Map<String, dynamic> params = {"memory": connection.memory};
-    object._memory = await RtmpStreamPlatform.instance.create(params);
+    object._memory =
+        await HaishinKitPlatform.instance.newRtmpStream(connection);
     return object;
   }
 

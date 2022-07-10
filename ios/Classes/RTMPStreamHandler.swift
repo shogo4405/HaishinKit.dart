@@ -3,123 +3,130 @@ import Flutter
 import HaishinKit
 import AVFoundation
 
-class RTMPStreamHandler {
-    var instances: [Int: RTMPStream] = [:]
+class RTMPStreamHandler: MethodCallHandler {
+    private var instance: RTMPStream?
+    private let id: Int
     private let plugin: SwiftHaishinKitPlugin
+    private let eventChannel: FlutterEventChannel?
+    private var eventSink: FlutterEventSink?
 
-    init(plugin: SwiftHaishinKitPlugin) {
+    init(plugin: SwiftHaishinKitPlugin, id: Int, handler: RTMPConnectionHandler) {
         self.plugin = plugin
+        self.id = id
+        if let registrar = plugin.registrar {
+            self.eventChannel = FlutterEventChannel(name: "com.haishinkit.eventchannel/\(id)", binaryMessenger: registrar.messenger())
+        } else {
+            self.eventChannel = nil
+        }
+        if let connection = handler.instance {
+            let instance = RTMPStream(connection: connection)
+            instance.addEventListener(.rtmpStatus, selector: #selector(RTMPStreamHandler.handler), observer: self)
+            self.instance = instance
+        }
     }
 
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard
+            let arguments = call.arguments as? [String: Any?] else {
+            return
+        }
         switch call.method {
-        case "RtmpStream#create":
-            guard
-                let arguments = call.arguments as? [String: Any?],
-                let memory = arguments["memory"] as? NSNumber,
-                let connection = plugin.rtmpConnectionHandler.instances[memory.intValue] else {
-                return
-            }
-            let count = instances.count
-            instances[count] = RTMPStream(connection: connection)
-            result(NSNumber(value: count))
         case "RtmpStream#setAudioSettings":
             guard
-                let arguments = call.arguments as? [String: Any?],
-                let memory = arguments["memory"] as? NSNumber,
-                let stream = instances[memory.intValue],
                 let settings = arguments["settings"] as? [String: Any?] else {
                 return
             }
             if let muted = settings["muted"] as? Bool {
-                stream.audioSettings[.muted] = muted
+                instance?.audioSettings[.muted] = muted
             }
             if let bitrate = settings["bitrate"] as? NSNumber {
-                stream.audioSettings[.bitrate] = bitrate.intValue
+                instance?.audioSettings[.bitrate] = bitrate.intValue
             }
             result(nil)
         case "RtmpStream#setVideoSettings":
             guard
-                let arguments = call.arguments as? [String: Any?],
-                let memory = arguments["memory"] as? NSNumber,
-                let stream = instances[memory.intValue],
                 let settings = arguments["settings"] as? [String: Any?] else {
                 return
             }
             if let muted = settings["muted"] as? Bool {
-                stream.videoSettings[.muted] = muted
+                instance?.videoSettings[.muted] = muted
             }
             if let bitrate = settings["bitrate"] as? NSNumber {
-                stream.videoSettings[.bitrate] = bitrate.intValue
+                instance?.videoSettings[.bitrate] = bitrate.intValue
             }
             if let width = settings["width"] as? NSNumber {
-                stream.videoSettings[.width] = width.intValue
+                instance?.videoSettings[.width] = width.intValue
             }
             if let height = settings["height"] as? NSNumber {
-                stream.videoSettings[.height] = height.intValue
+                instance?.videoSettings[.height] = height.intValue
             }
             if let frameInterval = settings["frameInterval"] as? NSNumber {
-                stream.videoSettings[.maxKeyFrameIntervalDuration] = frameInterval.intValue
+                instance?.videoSettings[.maxKeyFrameIntervalDuration] = frameInterval.intValue
             }
             result(nil)
         case "RtmpStream#attachAudio":
-            guard
-                let arguments = call.arguments as? [String: Any?],
-                let memory = arguments["memory"] as? NSNumber else {
-                return
-            }
             let source = arguments["source"] as? [String: Any?]
             if source == nil {
-                instances[memory.intValue]?.attachAudio(nil)
+                instance?.attachAudio(nil)
             } else {
-                instances[memory.intValue]?.attachAudio(AVCaptureDevice.default(for: .audio))
+                instance?.attachAudio(AVCaptureDevice.default(for: .audio))
             }
             result(nil)
         case "RtmpStream#attachVideo":
-            guard
-                let arguments = call.arguments as? [String: Any?],
-                let memory = arguments["memory"] as? NSNumber else {
-                return
-            }
             let source = arguments["source"] as? [String: Any?]
             if source == nil {
-                instances[memory.intValue]?.attachCamera(nil)
+                instance?.attachCamera(nil)
             } else {
-                instances[memory.intValue]?.attachCamera(DeviceUtil.device(withPosition: .back))
+                instance?.attachCamera(DeviceUtil.device(withPosition: .back))
             }
             result(nil)
         case "RtmpStream#play":
-            guard
-                let arguments = call.arguments as? [String: Any?],
-                let memory = arguments["memory"] as? NSNumber else {
-                return
-            }
-            instances[memory.intValue]?.play(arguments["name"] as? String)
+            instance?.play(arguments["name"] as? String)
+            result(nil)
         case "RtmpStream#publish":
-            guard
-                let arguments = call.arguments as? [String: Any?],
-                let memory = arguments["memory"] as? NSNumber else {
-                return
-            }
-            instances[memory.intValue]?.publish(arguments["name"] as? String)
+            instance?.publish(arguments["name"] as? String)
             result(nil)
         case "RtmpStream#registerTexture":
             guard
-                let arguments = call.arguments as? [String: Any?],
-                let memory = arguments["memory"] as? NSNumber,
-                let stream = instances[memory.intValue],
                 let registry = plugin.registrar?.textures() else {
                 return
             }
-            if (stream.mixer.drawable == nil) {
+            if instance?.mixer.drawable == nil {
                 let texture = NetStreamDrawableTexture(registry: registry)
-                texture.attachStream(stream)
+                if let instance = instance {
+                    texture.attachStream(instance)
+                }
                 result(texture.id)
             } else {
                 result(nil)
             }
+        case "RtmpStream#dispose":
+            instance?.removeEventListener(.rtmpStatus, selector: #selector(handler))
+            instance = nil
+            plugin.onDispose(id: id)
+            result(nil)
         default:
             result(FlutterMethodNotImplemented)
         }
+    }
+
+    @objc
+    private func handler(_ notification: Notification) {
+        let event = Event.from(notification)
+        var map: [String: Any?] = [:]
+        map["type"] = event.type.rawValue
+        map["data"] = event.data
+        eventSink?(map)
+    }
+}
+
+extension RTMPStreamHandler: FlutterStreamHandler {
+    public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+        self.eventSink = events
+        return nil
+    }
+
+    public func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        return nil
     }
 }

@@ -4,12 +4,6 @@ import 'package:haishin_kit/rtmp_connection_platform_interface.dart';
 /// The method channel implementation of [RtmpConnectionPlatform]
 class MethodChannelRtmpConnection extends RtmpConnectionPlatform {
   @override
-  Future<int?> create() async {
-    return await MethodChannelHaishinKit.channel
-        .invokeMethod<int?>('RtmpConnection#create');
-  }
-
-  @override
   Future<void> connect(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel
         .invokeMethod<void>('RtmpConnection#connect', params);

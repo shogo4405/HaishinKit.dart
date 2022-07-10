@@ -1,78 +1,90 @@
 package com.haishinkit.haishin_kit
 
 import android.util.Size
+import com.haishinkit.event.Event
+import com.haishinkit.event.IEventListener
 import com.haishinkit.media.AudioRecordSource
 import com.haishinkit.media.Camera2Source
 import com.haishinkit.rtmp.RtmpStream
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import java.util.concurrent.ConcurrentHashMap
 
-class RtmpStreamHandler(private val plugin: HaishinKitPlugin) : MethodChannel.MethodCallHandler {
-    var instances = ConcurrentHashMap<Int, RtmpStream>()
+class RtmpStreamHandler(
+    private val plugin: HaishinKitPlugin,
+    private val id: Int,
+    handler: RtmpConnectionHandler?
+) : MethodChannel.MethodCallHandler, IEventListener,
+    EventChannel.StreamHandler {
+    companion object {
+        private const val TAG = "RtmpStream"
+    }
+
+    var instance: RtmpStream? = null
+    private var channel: EventChannel
+    private var eventSink: EventChannel.EventSink? = null
+
+    init {
+        handler?.instance?.let {
+            instance = RtmpStream(it)
+        }
+        channel = EventChannel(
+            plugin.flutterPluginBinding.binaryMessenger,
+            "com.haishinkit.eventchannel/${id}"
+        )
+        channel.setStreamHandler(this)
+    }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "RtmpStream#create" -> {
-                val memory = call.argument<Int>("memory") ?: return;
-                val size = instances.size
-                plugin.rtmpConnectionHandler.instances[memory]?.let {
-                    instances[size] = RtmpStream(
-                        it
-                    )
-                    result.success(size)
-                }
-            }
-            "RtmpStream#setAudioSettings" -> {
+            "$TAG#setAudioSettings" -> {
                 val source = call.argument<Map<String, Any?>>("settings") ?: return
-                val stream = instances[call.argument("memory")] ?: return
                 (source["bitrate"] as? Int)?.let {
-                    stream.audioSetting.bitRate = it
+                    instance?.audioSetting?.bitRate = it
                 }
                 result.success(null)
             }
-            "RtmpStream#setVideoSettings" -> {
+            "$TAG#setVideoSettings" -> {
                 val source = call.argument<Map<String, Any?>>("settings") ?: return
-                val stream = instances[call.argument("memory")] ?: return
                 (source["width"] as? Int)?.let {
-                    stream.videoSetting.width = it
+                    instance?.videoSetting?.width = it
                 }
                 (source["height"] as? Int)?.let {
-                    stream.videoSetting.height = it
+                    instance?.videoSetting?.height = it
                 }
                 (source["frameInterval"] as? Int)?.let {
-                    stream.videoSetting.IFrameInterval = it
+                    instance?.videoSetting?.IFrameInterval = it
                 }
                 (source["bitrate"] as? Int)?.let {
-                    stream.videoSetting.bitRate = it
+                    instance?.videoSetting?.bitRate = it
                 }
                 result.success(null)
             }
-            "RtmpStream#setCaptureSettings" -> {
+            "$TAG#setCaptureSettings" -> {
                 result.success(null)
             }
-            "RtmpStream#attachAudio" -> {
+            "$TAG#attachAudio" -> {
                 val source = call.argument<Map<String, Any?>>("source")
                 if (source == null) {
-                    instances[call.argument("memory")]?.attachAudio(null)
+                    instance?.attachAudio(null)
                 } else {
-                    instances[call.argument("memory")]?.attachAudio(AudioRecordSource(plugin.flutterPluginBinding.applicationContext))
+                    instance?.attachAudio(AudioRecordSource(plugin.flutterPluginBinding.applicationContext))
                 }
                 result.success(null)
             }
-            "RtmpStream#attachVideo" -> {
+            "$TAG#attachVideo" -> {
                 val source = call.argument<Map<String, Any?>>("source")
                 if (source == null) {
-                    instances[call.argument("memory")]?.attachVideo(null)
+                    instance?.attachVideo(null)
                 } else {
                     val source = Camera2Source(plugin.flutterPluginBinding.applicationContext)
                     source.open(0)
-                    instances[call.argument("memory")]?.attachVideo(source)
+                    instance?.attachVideo(source)
                 }
                 result.success(null)
             }
-            "RtmpStream#registerTexture" -> {
-                val netStream = instances[call.argument("memory")]
+            "$TAG#registerTexture" -> {
+                val netStream = instance
                 if (netStream?.drawable == null) {
                     val texture = NetStreamDrawableTexture(plugin.flutterPluginBinding)
                     texture.attachStream(netStream)
@@ -86,10 +98,30 @@ class RtmpStreamHandler(private val plugin: HaishinKitPlugin) : MethodChannel.Me
                     result.success(texture?.id)
                 }
             }
-            "RtmpStream#publish" -> {
-                instances[call.argument("memory")]?.publish(call.argument("name"))
+            "$TAG#publish" -> {
+                instance?.publish(call.argument("name"))
+                result.success(null)
+            }
+            "$TAG#dispose" -> {
+                eventSink?.endOfStream()
+                instance = null
+                plugin.onDispose(id)
                 result.success(null)
             }
         }
+    }
+
+    override fun handleEvent(event: Event) {
+        val map = HashMap<String, Any?>()
+        map["type"] = event.type
+        map["data"] = event.data
+        eventSink?.success(map)
+    }
+
+    override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+        eventSink = events
+    }
+
+    override fun onCancel(arguments: Any?) {
     }
 }
