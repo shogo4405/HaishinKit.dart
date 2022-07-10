@@ -3,7 +3,7 @@ import Flutter
 import HaishinKit
 
 class RTMPConnectionHandler {
-    var instances: [Double: RTMPConnection] = [:]
+    var instances: [Int: RTMPConnection] = [:]
     private let plugin: SwiftHaishinKitPlugin
 
     init(plugin: SwiftHaishinKitPlugin) {
@@ -13,7 +13,7 @@ class RTMPConnectionHandler {
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
         case "RtmpConnection#create":
-            let memory = Double(instances.count)
+            let memory = instances.count
             instances[memory] = RTMPConnection()
             result(NSNumber(value: memory))
         case "RtmpConnection#connect":
@@ -23,14 +23,14 @@ class RTMPConnectionHandler {
                 let command = arguments["command"] as? String else {
                 return
             }
-            instances[memory.doubleValue]?.connect(command)
+            instances[memory.intValue]?.connect(command)
         case "RtmpConnection#close":
             guard
                 let arguments = call.arguments as? [String: Any?],
                 let memory = arguments["memory"] as? NSNumber else {
                 return
             }
-            instances[memory.doubleValue]?.close()
+            instances[memory.intValue]?.close()
         default:
             result(FlutterMethodNotImplemented)
         }

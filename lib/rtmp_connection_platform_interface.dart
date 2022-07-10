@@ -15,7 +15,7 @@ abstract class RtmpConnectionPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<double?> create() {
+  Future<int?> create() {
     throw UnimplementedError('create() has not been implemented.');
   }
 

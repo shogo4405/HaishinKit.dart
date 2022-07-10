@@ -7,7 +7,7 @@ import 'capture_settings.dart';
 
 /// The NetStream class is the foundation of a RTMPStream.
 abstract class NetStream {
-  double? get memory;
+  int? get memory;
 
   /// Specifies stream video compression properties.
   set videoSettings(VideoSettings videoSettings);

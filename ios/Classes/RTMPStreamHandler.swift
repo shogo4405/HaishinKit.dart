@@ -4,7 +4,7 @@ import HaishinKit
 import AVFoundation
 
 class RTMPStreamHandler {
-    var instances: [Double: RTMPStream] = [:]
+    var instances: [Int: RTMPStream] = [:]
     private let plugin: SwiftHaishinKitPlugin
 
     init(plugin: SwiftHaishinKitPlugin) {
@@ -17,17 +17,17 @@ class RTMPStreamHandler {
             guard
                 let arguments = call.arguments as? [String: Any?],
                 let memory = arguments["memory"] as? NSNumber,
-                let connection = plugin.rtmpConnectionHandler.instances[memory.doubleValue] else {
+                let connection = plugin.rtmpConnectionHandler.instances[memory.intValue] else {
                 return
             }
-            let count = Double(instances.count)
+            let count = instances.count
             instances[count] = RTMPStream(connection: connection)
             result(NSNumber(value: count))
         case "RtmpStream#setAudioSettings":
             guard
                 let arguments = call.arguments as? [String: Any?],
                 let memory = arguments["memory"] as? NSNumber,
-                let stream = instances[memory.doubleValue] as? RTMPStream,
+                let stream = instances[memory.intValue],
                 let settings = arguments["settings"] as? [String: Any?] else {
                 return
             }
@@ -42,7 +42,7 @@ class RTMPStreamHandler {
             guard
                 let arguments = call.arguments as? [String: Any?],
                 let memory = arguments["memory"] as? NSNumber,
-                let stream = instances[memory.doubleValue] as? RTMPStream,
+                let stream = instances[memory.intValue],
                 let settings = arguments["settings"] as? [String: Any?] else {
                 return
             }
@@ -70,9 +70,9 @@ class RTMPStreamHandler {
             }
             let source = arguments["source"] as? [String: Any?]
             if source == nil {
-                instances[memory.doubleValue]?.attachAudio(nil)
+                instances[memory.intValue]?.attachAudio(nil)
             } else {
-                instances[memory.doubleValue]?.attachAudio(AVCaptureDevice.default(for: .audio))
+                instances[memory.intValue]?.attachAudio(AVCaptureDevice.default(for: .audio))
             }
             result(nil)
         case "RtmpStream#attachVideo":
@@ -83,9 +83,9 @@ class RTMPStreamHandler {
             }
             let source = arguments["source"] as? [String: Any?]
             if source == nil {
-                instances[memory.doubleValue]?.attachCamera(nil)
+                instances[memory.intValue]?.attachCamera(nil)
             } else {
-                instances[memory.doubleValue]?.attachCamera(DeviceUtil.device(withPosition: .back))
+                instances[memory.intValue]?.attachCamera(DeviceUtil.device(withPosition: .back))
             }
             result(nil)
         case "RtmpStream#play":
@@ -94,26 +94,30 @@ class RTMPStreamHandler {
                 let memory = arguments["memory"] as? NSNumber else {
                 return
             }
-            instances[memory.doubleValue]?.play(arguments["name"] as? String)
+            instances[memory.intValue]?.play(arguments["name"] as? String)
         case "RtmpStream#publish":
             guard
                 let arguments = call.arguments as? [String: Any?],
                 let memory = arguments["memory"] as? NSNumber else {
                 return
             }
-            instances[memory.doubleValue]?.publish(arguments["name"] as? String)
+            instances[memory.intValue]?.publish(arguments["name"] as? String)
             result(nil)
         case "RtmpStream#registerTexture":
             guard
                 let arguments = call.arguments as? [String: Any?],
                 let memory = arguments["memory"] as? NSNumber,
-                let stream = instances[memory.doubleValue],
+                let stream = instances[memory.intValue],
                 let registry = plugin.registrar?.textures() else {
                 return
             }
-            let texture = NetStreamDrawableTexture(registry: registry)
-            texture.attachStream(stream)
-            result(texture.id)
+            if (stream.mixer.drawable == nil) {
+                let texture = NetStreamDrawableTexture(registry: registry)
+                texture.attachStream(stream)
+                result(texture.id)
+            } else {
+                result(nil)
+            }
         default:
             result(FlutterMethodNotImplemented)
         }

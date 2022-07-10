@@ -7,12 +7,12 @@ import java.util.concurrent.ConcurrentHashMap
 
 class RtmpConnectionHandler(private val plugin: HaishinKitPlugin) :
     MethodChannel.MethodCallHandler {
-    var instances = ConcurrentHashMap<Double, RtmpConnection>()
+    var instances = ConcurrentHashMap<Int, RtmpConnection>()
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "RtmpConnection#create" -> {
-                val memory = instances.size.toDouble()
+                val memory = instances.size
                 instances[memory] = RtmpConnection()
                 result.success(memory)
             }

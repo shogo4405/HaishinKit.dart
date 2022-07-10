@@ -9,13 +9,13 @@ import io.flutter.plugin.common.MethodChannel
 import java.util.concurrent.ConcurrentHashMap
 
 class RtmpStreamHandler(private val plugin: HaishinKitPlugin) : MethodChannel.MethodCallHandler {
-    var instances = ConcurrentHashMap<Double, RtmpStream>()
+    var instances = ConcurrentHashMap<Int, RtmpStream>()
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "RtmpStream#create" -> {
-                val memory = call.argument<Double>("memory") ?: return;
-                val size = instances.size.toDouble()
+                val memory = call.argument<Int>("memory") ?: return;
+                val size = instances.size
                 plugin.rtmpConnectionHandler.instances[memory]?.let {
                     instances[size] = RtmpStream(
                         it

@@ -5,9 +5,9 @@ import 'haishin_kit_method_channel.dart';
 /// The method channel implementation of [RtmpStreamPlatform]
 class MethodChannelRtmpStream extends RtmpStreamPlatform {
   @override
-  Future<double?> create(Map<String, dynamic> params) async {
+  Future<int?> create(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel
-        .invokeMethod<double?>('RtmpStream#create', params);
+        .invokeMethod<int?>('RtmpStream#create', params);
   }
 
   @override

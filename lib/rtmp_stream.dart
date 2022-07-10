@@ -16,7 +16,7 @@ class RtmpStream extends NetStream {
     return object;
   }
 
-  double? _memory;
+  int? _memory;
 
   VideoSettings _videoSettings = VideoSettings();
   AudioSettings _audioSettings = AudioSettings();
@@ -25,7 +25,7 @@ class RtmpStream extends NetStream {
   RtmpStream._();
 
   @override
-  double? get memory => _memory;
+  int? get memory => _memory;
 
   VideoSettings get videoSettings => _videoSettings;
 

@@ -7,11 +7,11 @@ class RtmpConnection {
     return object;
   }
 
-  double? _memory;
+  int? _memory;
 
   RtmpConnection._();
 
-  double? get memory => _memory;
+  int? get memory => _memory;
 
   void connect(String command) async {
     assert(_memory != null);

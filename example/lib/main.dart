@@ -45,6 +45,7 @@ class _MyAppState extends State<MyApp> {
     RtmpConnection connection = await RtmpConnection.create();
     RtmpStream stream = await RtmpStream.create(connection);
     stream.attachAudio(AudioSource());
+    stream.attachVideo(VideoSource());
 
     if (!mounted) return;
 
@@ -62,7 +63,9 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: _stream == null ? const Text("") : NetStreamDrawableTexture(_stream),
+          child: _stream == null
+              ? const Text("")
+              : NetStreamDrawableTexture(_stream),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {

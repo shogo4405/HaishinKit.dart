@@ -23,7 +23,6 @@ class _NetStreamDrawableState extends State<NetStreamDrawableTexture> {
 
   Future<void> initPlatformState() async {
     int? textureId = await widget.netStream?.registerTexture({});
-    widget.netStream?.attachVideo(VideoSource());
     setState(() {
       _textureId = textureId;
     });
