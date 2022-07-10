@@ -7,6 +7,7 @@ import 'capture_settings.dart';
 
 /// The NetStream class is the foundation of a RTMPStream.
 abstract class NetStream {
+  /// The memory address.
   int? get memory;
 
   /// Specifies stream video compression properties.
@@ -21,9 +22,10 @@ abstract class NetStream {
   /// Attaches an AudioSource to this stream.
   Future<void> attachAudio(AudioSource? audio);
 
-  /// Attaches an VideoSource to this stream.
+  /// Attaches a VideoSource to this stream.
   Future<void> attachVideo(VideoSource? video);
 
+  /// Register a texture to this stream.
   Future<int?> registerTexture(Map<String, dynamic> params);
 
   /// Stops playing or publishing and makes available other uses.
