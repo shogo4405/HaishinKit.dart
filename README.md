@@ -1,6 +1,6 @@
 # HaishinKit Plugin
 
-[![pub package](https://img.shields.io/pub/v/haishin_kit.svg)](https://pub.dev/packages/haihsin_kit)
+[![pub package](https://img.shields.io/pub/v/haishin_kit.svg)](https://pub.dev/packages/haishin_kit)
 
 * A Flutter plugin for iOS, Android. Camera and Microphone streaming library via RTMP.
 
