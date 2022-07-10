@@ -43,6 +43,13 @@ class _MyAppState extends State<MyApp> {
     ));
 
     RtmpConnection connection = await RtmpConnection.create();
+    connection.eventChannel.receiveBroadcastStream().listen((event) {
+      switch (event["data"]["code"]) {
+        case 'NetConnection.Connect.Success':
+          _stream?.publish("live");
+          break;
+      }
+    });
     RtmpStream stream = await RtmpStream.create(connection);
     stream.attachAudio(AudioSource());
     stream.attachVideo(VideoSource());
@@ -70,7 +77,6 @@ class _MyAppState extends State<MyApp> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             _connection?.connect("rtmp://192.168.1.9/live");
-            _stream?.publish("live");
           },
         ),
       ),

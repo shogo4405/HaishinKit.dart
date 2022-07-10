@@ -3,18 +3,20 @@ import Flutter
 import HaishinKit
 import AVFoundation
 
-class RTMPStreamHandler: MethodCallHandler {
-    private var instance: RTMPStream?
+class RTMPStreamHandler: NSObject, MethodCallHandler {
     private let id: Int
     private let plugin: SwiftHaishinKitPlugin
-    private let eventChannel: FlutterEventChannel?
+    private var instance: RTMPStream?
+    private var eventChannel: FlutterEventChannel?
     private var eventSink: FlutterEventSink?
 
     init(plugin: SwiftHaishinKitPlugin, id: Int, handler: RTMPConnectionHandler) {
         self.plugin = plugin
         self.id = id
+        super.init()
         if let registrar = plugin.registrar {
             self.eventChannel = FlutterEventChannel(name: "com.haishinkit.eventchannel/\(id)", binaryMessenger: registrar.messenger())
+            self.eventChannel?.setStreamHandler(self)
         } else {
             self.eventChannel = nil
         }

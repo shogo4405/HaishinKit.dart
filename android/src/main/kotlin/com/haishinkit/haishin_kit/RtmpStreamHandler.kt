@@ -115,7 +115,9 @@ class RtmpStreamHandler(
         val map = HashMap<String, Any?>()
         map["type"] = event.type
         map["data"] = event.data
-        eventSink?.success(map)
+        plugin.uiThreadHandler.post {
+            eventSink?.success(map)
+        }
     }
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {

@@ -1,5 +1,7 @@
 package com.haishinkit.haishin_kit
 
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.NonNull
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -14,6 +16,7 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     lateinit var flutterPluginBinding: FlutterPlugin.FlutterPluginBinding
+    val uiThreadHandler = Handler(Looper.getMainLooper())
     private lateinit var channel: MethodChannel
     private var handlers = ConcurrentHashMap<Int, MethodCallHandler>()
 

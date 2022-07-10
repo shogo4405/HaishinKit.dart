@@ -1,5 +1,7 @@
 package com.haishinkit.haishin_kit
 
+import android.os.Handler
+import android.os.Looper
 import com.haishinkit.event.Event
 import com.haishinkit.event.IEventListener
 import com.haishinkit.rtmp.RtmpConnection
@@ -56,7 +58,9 @@ class RtmpConnectionHandler(
         val map = HashMap<String, Any?>()
         map["type"] = event.type
         map["data"] = event.data
-        eventSink?.success(map)
+        plugin.uiThreadHandler.post {
+            eventSink?.success(map)
+        }
     }
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {

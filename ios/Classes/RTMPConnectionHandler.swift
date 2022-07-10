@@ -2,18 +2,26 @@ import Foundation
 import Flutter
 import HaishinKit
 
-class RTMPConnectionHandler: MethodCallHandler {
+class RTMPConnectionHandler: NSObject, MethodCallHandler {
     var instance: RTMPConnection?
     private let id: Int
     private let plugin: SwiftHaishinKitPlugin
+    private var channel: FlutterEventChannel?
     private var eventSink: FlutterEventSink?
 
     init(plugin: SwiftHaishinKitPlugin, id: Int) {
         self.plugin = plugin
         self.id = id
+        super.init()
+        if let messanger = plugin.registrar?.messenger() {
+            self.channel = FlutterEventChannel(name: "com.haishinkit.eventchannel/\(id)", binaryMessenger: messanger)
+        } else {
+            self.channel = nil
+        }
         instance = RTMPConnection()
         instance?.addEventListener(.rtmpStatus, selector: #selector(handler), observer: self)
         instance?.addEventListener(.ioError, selector: #selector(handler), observer: self)
+        channel?.setStreamHandler(self)
     }
 
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
