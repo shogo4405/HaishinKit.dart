@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:haishin_kit/audio_source.dart';
 import 'package:haishin_kit/haishin_kit_platform_interface.dart';
 import 'package:haishin_kit/net_stream.dart';
@@ -14,10 +15,13 @@ class RtmpStream extends NetStream {
     var object = RtmpStream._();
     object._memory =
         await HaishinKitPlatform.instance.newRtmpStream(connection);
+    object._eventChannel =
+        EventChannel("com.haishinkit.eventchannel/${object._memory}");
     return object;
   }
 
   int? _memory;
+  late EventChannel _eventChannel;
 
   VideoSettings _videoSettings = VideoSettings();
   AudioSettings _audioSettings = AudioSettings();
@@ -27,6 +31,8 @@ class RtmpStream extends NetStream {
 
   @override
   int? get memory => _memory;
+
+  EventChannel get eventChannel => _eventChannel;
 
   VideoSettings get videoSettings => _videoSettings;
 

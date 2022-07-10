@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:haishin_kit/net_stream.dart';
-import 'package:haishin_kit/video_source.dart';
 
 class NetStreamDrawableTexture extends StatefulWidget {
   const NetStreamDrawableTexture(this.netStream, {Key? key}) : super(key: key);

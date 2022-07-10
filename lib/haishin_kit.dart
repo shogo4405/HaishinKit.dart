@@ -1,5 +1,4 @@
 import 'package:haishin_kit/rtmp_connection.dart';
-import 'package:haishin_kit/rtmp_stream.dart';
 
 import 'haishin_kit_platform_interface.dart';
 

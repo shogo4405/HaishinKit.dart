@@ -6,7 +6,8 @@ class RtmpConnection {
   static Future<RtmpConnection> create() async {
     var object = RtmpConnection._();
     object._memory = await HaishinKitPlatform.instance.newRtmpConnection();
-    object._channel = EventChannel("com.haishinkit.eventchannel/${object._memory}");
+    object._channel =
+        EventChannel("com.haishinkit.eventchannel/${object._memory}");
     return object;
   }
 

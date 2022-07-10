@@ -14,8 +14,8 @@ class MethodChannelHaishinKit extends HaishinKitPlatform {
 
   @override
   Future<int?> newRtmpStream(RtmpConnection connection) async {
-    return await channel.invokeMethod<int?>(
-        'newRtmpStream', {"connection": connection.memory});
+    return await channel
+        .invokeMethod<int?>('newRtmpStream', {"connection": connection.memory});
   }
 
   @override

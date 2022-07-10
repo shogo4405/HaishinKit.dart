@@ -23,6 +23,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   RtmpConnection? _connection;
   RtmpStream? _stream;
+  bool _recording = false;
 
   @override
   void initState() {
@@ -47,6 +48,9 @@ class _MyAppState extends State<MyApp> {
       switch (event["data"]["code"]) {
         case 'NetConnection.Connect.Success':
           _stream?.publish("live");
+          setState(() {
+            _recording = true;
+          });
           break;
       }
     });
@@ -75,8 +79,18 @@ class _MyAppState extends State<MyApp> {
               : NetStreamDrawableTexture(_stream),
         ),
         floatingActionButton: FloatingActionButton(
+          child: _recording
+              ? const Icon(Icons.fiber_smart_record)
+              : const Icon(Icons.not_started),
           onPressed: () {
-            _connection?.connect("rtmp://192.168.1.9/live");
+            if (_recording) {
+              _connection?.close();
+              setState(() {
+                _recording = false;
+              });
+            } else {
+              _connection?.connect("rtmp://192.168.1.9/live");
+            }
           },
         ),
       ),
