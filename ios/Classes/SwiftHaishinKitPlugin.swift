@@ -25,14 +25,16 @@ public class SwiftHaishinKitPlugin: NSObject, FlutterPlugin {
         }
         switch call.method {
         case "newRtmpConnection":
-            let memory = handlers.count
-            handlers[memory] = RTMPConnectionHandler(plugin: self, id: memory)
+            let handler = RTMPConnectionHandler(plugin: self)
+            let memory = Int(bitPattern: ObjectIdentifier(handler))
+            handlers[memory] = handler
             result(NSNumber(value: memory))
         case "newRtmpStream":
             if let conneciton = (call.arguments as? [String: Any?])?["connection"] as? NSNumber {
                 if let handler = handlers[conneciton.intValue] as? RTMPConnectionHandler {
-                    let memory = handlers.count
-                    handlers[memory] = RTMPStreamHandler(plugin: self, id: memory, handler: handler)
+                    let stream = RTMPStreamHandler(plugin: self, handler: handler)
+                    let memory = Int(bitPattern: ObjectIdentifier(stream))
+                    handlers[memory] = stream
                     result(NSNumber(value: memory))
                 }
             }

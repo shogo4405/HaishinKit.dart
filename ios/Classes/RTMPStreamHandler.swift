@@ -4,16 +4,15 @@ import HaishinKit
 import AVFoundation
 
 class RTMPStreamHandler: NSObject, MethodCallHandler {
-    private let id: Int
     private let plugin: SwiftHaishinKitPlugin
     private var instance: RTMPStream?
     private var eventChannel: FlutterEventChannel?
     private var eventSink: FlutterEventSink?
 
-    init(plugin: SwiftHaishinKitPlugin, id: Int, handler: RTMPConnectionHandler) {
+    init(plugin: SwiftHaishinKitPlugin, handler: RTMPConnectionHandler) {
         self.plugin = plugin
-        self.id = id
         super.init()
+        let id = Int(bitPattern: ObjectIdentifier(self))
         if let registrar = plugin.registrar {
             self.eventChannel = FlutterEventChannel(name: "com.haishinkit.eventchannel/\(id)", binaryMessenger: registrar.messenger())
             self.eventChannel?.setStreamHandler(self)
@@ -116,7 +115,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
         case "RtmpStream#dispose":
             instance?.removeEventListener(.rtmpStatus, selector: #selector(handler))
             instance = nil
-            plugin.onDispose(id: id)
+            plugin.onDispose(id: Int(bitPattern: ObjectIdentifier(self)))
             result(nil)
         default:
             result(FlutterMethodNotImplemented)

@@ -43,16 +43,16 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
         }
         when (call.method) {
             "newRtmpConnection" -> {
-                val id = handlers.size
-                handlers[id] = RtmpConnectionHandler(this, id)
-                result.success(id)
+                val handler = RtmpConnectionHandler(this)
+                handlers[handler.hashCode()] = handler
+                result.success(handler.hashCode())
             }
             "newRtmpStream" -> {
                 val connection = call.argument<Int>("connection")
-                val id = handlers.size
-                handlers[id] =
-                    RtmpStreamHandler(this, id, handlers[connection] as? RtmpConnectionHandler)
-                result.success(id)
+                val handler =
+                    RtmpStreamHandler(this, handlers[connection] as? RtmpConnectionHandler)
+                handlers[handler.hashCode()] = handler
+                result.success(handler.hashCode())
             }
             "getVersion" -> {
                 result.success(com.haishinkit.BuildConfig.VERSION_NAME)

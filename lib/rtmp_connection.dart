@@ -25,14 +25,19 @@ class RtmpConnection {
   /// Creates a two-way connection to an application on RTMP Server.
   void connect(String command) async {
     assert(_memory != null);
-    final Map<String, dynamic> params = {"memory": _memory, "command": command};
-    RtmpConnectionPlatform.instance.connect(params);
+    RtmpConnectionPlatform.instance
+        .connect({"memory": _memory, "command": command});
   }
 
   /// Closes the connection from the server.
   void close() async {
     assert(_memory != null);
-    final Map<String, dynamic> params = {"memory": _memory};
-    RtmpConnectionPlatform.instance.close(params);
+    RtmpConnectionPlatform.instance.close({"memory": _memory});
+  }
+
+  /// Disposes the connection platform instance.
+  void dispose() async {
+    assert(_memory != null);
+    RtmpConnectionPlatform.instance.dispose({"memory": _memory});
   }
 }

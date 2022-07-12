@@ -4,15 +4,14 @@ import HaishinKit
 
 class RTMPConnectionHandler: NSObject, MethodCallHandler {
     var instance: RTMPConnection?
-    private let id: Int
     private let plugin: SwiftHaishinKitPlugin
     private var channel: FlutterEventChannel?
     private var eventSink: FlutterEventSink?
 
-    init(plugin: SwiftHaishinKitPlugin, id: Int) {
+    init(plugin: SwiftHaishinKitPlugin) {
         self.plugin = plugin
-        self.id = id
         super.init()
+        let id = Int(bitPattern: ObjectIdentifier(self))
         if let messanger = plugin.registrar?.messenger() {
             self.channel = FlutterEventChannel(name: "com.haishinkit.eventchannel/\(id)", binaryMessenger: messanger)
         } else {
@@ -37,7 +36,7 @@ class RTMPConnectionHandler: NSObject, MethodCallHandler {
             instance?.close()
         case "RtmpConnection#dispose":
             instance = nil
-            plugin.onDispose(id: id)
+            plugin.onDispose(id: Int(bitPattern: ObjectIdentifier(self)))
         default:
             result(FlutterMethodNotImplemented)
         }

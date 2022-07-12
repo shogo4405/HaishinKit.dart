@@ -8,8 +8,8 @@ class NetStreamDrawableTexture: NSObject, FlutterTexture {
     var position: AVCaptureDevice.Position = .back
     var currentSampleBuffer: CMSampleBuffer?
     var videoFormatDescription: CMVideoFormatDescription?
-    private let registry: FlutterTextureRegistry
     var id: Int64 = 0
+    private let registry: FlutterTextureRegistry
     private var queue = DispatchQueue(label: "com.haishinkit.NetStreamDrawableTexture")
     private var currentStream: NetStream?
 

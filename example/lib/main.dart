@@ -32,6 +32,13 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
   }
 
+  @override
+  void dispose() {
+    _stream?.dispose();
+    _connection?.dispose();
+    super.dispose();
+  }
+
   Future<void> initPlatformState() async {
     await Permission.camera.request();
     await Permission.microphone.request();
@@ -71,7 +78,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: const Text('HaishinKit example app'), actions: [
+        appBar: AppBar(title: const Text('HaishinKit'), actions: [
           IconButton(
             icon: const Icon(Icons.flip_camera_android),
             onPressed: () {

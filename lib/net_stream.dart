@@ -30,4 +30,7 @@ abstract class NetStream {
 
   /// Stops playing or publishing and makes available other uses.
   Future<void> close();
+
+  /// Disposes the NetStream platform instance.
+  Future<void> dispose();
 }

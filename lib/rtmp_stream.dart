@@ -102,4 +102,10 @@ class RtmpStream extends NetStream {
     assert(_memory != null);
     RtmpStreamPlatform.instance.close({"memory": _memory});
   }
+
+  @override
+  Future<void> dispose() async {
+    assert(_memory != null);
+    RtmpStreamPlatform.instance.dispose({"memory": _memory});
+  }
 }

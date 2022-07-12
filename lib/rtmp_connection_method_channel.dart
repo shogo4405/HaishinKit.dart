@@ -14,4 +14,10 @@ class MethodChannelRtmpConnection extends RtmpConnectionPlatform {
     return await MethodChannelHaishinKit.channel
         .invokeMethod<void>('RtmpConnection#close', params);
   }
+
+  @override
+  Future<void> dispose(Map<String, dynamic> params) async {
+    return await MethodChannelHaishinKit.channel
+        .invokeMethod<void>("RtmpConnection#dispose", params);
+  }
 }
