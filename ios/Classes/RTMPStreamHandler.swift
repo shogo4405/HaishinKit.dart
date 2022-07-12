@@ -22,6 +22,10 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
         if let connection = handler.instance {
             let instance = RTMPStream(connection: connection)
             instance.addEventListener(.rtmpStatus, selector: #selector(RTMPStreamHandler.handler), observer: self)
+            if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
+                instance.orientation = orientation
+            }
+            NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
             self.instance = instance
         }
     }
@@ -80,7 +84,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
             } else {
                 var devicePosition = AVCaptureDevice.Position.back
                 if let position = source?["position"] as? String {
-                    switch (position) {
+                    switch position {
                     case "front":
                         devicePosition = .front
                     case "back":
@@ -129,6 +133,14 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
         map["type"] = event.type.rawValue
         map["data"] = event.data
         eventSink?(map)
+    }
+
+    @objc
+    private func on(_ notification: Notification) {
+        guard let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) else {
+            return
+        }
+        instance?.orientation = orientation
     }
 }
 

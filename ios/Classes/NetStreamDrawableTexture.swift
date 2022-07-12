@@ -34,6 +34,7 @@ class NetStreamDrawableTexture: NSObject, FlutterTexture {
 }
 
 extension NetStreamDrawableTexture: NetStreamDrawable {
+    // MARK: - NetStreamDrawable
     func attachStream(_ stream: NetStream?) {
         guard let stream = stream else {
             self.currentStream = nil
