@@ -4,11 +4,11 @@ import HaishinKit
 import AVFoundation
 
 class NetStreamDrawableTexture: NSObject, FlutterTexture {
+    var id: Int64 = 0
     var orientation: AVCaptureVideoOrientation = .portrait
     var position: AVCaptureDevice.Position = .back
-    var currentSampleBuffer: CMSampleBuffer?
     var videoFormatDescription: CMVideoFormatDescription?
-    var id: Int64 = 0
+    private var currentSampleBuffer: CMSampleBuffer?
     private let registry: FlutterTextureRegistry
     private var queue = DispatchQueue(label: "com.haishinkit.NetStreamDrawableTexture")
     private var currentStream: NetStream?
@@ -20,16 +20,12 @@ class NetStreamDrawableTexture: NSObject, FlutterTexture {
     }
 
     func copyPixelBuffer() -> Unmanaged<CVPixelBuffer>? {
-        var pixelBuffer: Unmanaged<CVPixelBuffer>?
-        if #available(iOS 13.0, *) {
-            if let imageBuffer = currentSampleBuffer?.imageBuffer {
-                queue.sync {
-                    pixelBuffer = Unmanaged<CVPixelBuffer>.passRetained(imageBuffer)
-                }
-            }
-        } else {
+        guard
+            let currentSampleBuffer = currentSampleBuffer,
+            let imageBuffer = CMSampleBufferGetImageBuffer(currentSampleBuffer) else {
+            return nil
         }
-        return pixelBuffer
+        return Unmanaged<CVPixelBuffer>.passRetained(imageBuffer)
     }
 }
 
