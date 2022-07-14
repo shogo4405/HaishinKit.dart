@@ -46,6 +46,12 @@ class NetStreamDrawableTexture(binding: FlutterPlugin.FlutterPluginBinding) :
             pixelTransform.isRotatesWithContent = value
         }
 
+    override var deviceOrientation: Int
+        get() = pixelTransform.deviceOrientation
+        set(value) {
+            pixelTransform.deviceOrientation = value
+        }
+
     val id: Long
         get() = entry?.id() ?: 0
 

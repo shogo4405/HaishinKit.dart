@@ -48,6 +48,5 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.github.shogo4405.HaishinKit~kt:haishinkit:0.10.1'
-    implementation 'com.github.shogo4405.HaishinKit~kt:vulkan:0.10.1'
+    implementation 'com.github.shogo4405.HaishinKit~kt:haishinkit:0.10.2'
 }

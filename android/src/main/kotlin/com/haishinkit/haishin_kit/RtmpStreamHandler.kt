@@ -1,7 +1,9 @@
 package com.haishinkit.haishin_kit
 
+import android.content.Context
 import android.hardware.camera2.CameraCharacteristics
 import android.util.Size
+import android.view.WindowManager
 import com.haishinkit.event.Event
 import com.haishinkit.event.IEventListener
 import com.haishinkit.media.AudioRecordSource
@@ -109,6 +111,9 @@ class RtmpStreamHandler(
                     val height = call.argument<Double>("height") ?: 0
                     texture?.imageExtent =
                         Size(width.toInt(), height.toInt())
+                    (plugin.flutterPluginBinding.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.defaultDisplay?.orientation?.let {
+                        netStream.deviceOrientation = it
+                    }
                     result.success(texture?.id)
                 }
             }
