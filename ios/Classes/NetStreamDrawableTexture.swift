@@ -8,8 +8,11 @@ class NetStreamDrawableTexture: NSObject, FlutterTexture {
     var orientation: AVCaptureVideoOrientation = .portrait
     var position: AVCaptureDevice.Position = .back
     var videoFormatDescription: CMVideoFormatDescription?
+    var bounds: CGSize = .zero
+    var videoGravity: AVLayerVideoGravity = .resizeAspectFill
     private var currentSampleBuffer: CMSampleBuffer?
     private let registry: FlutterTextureRegistry
+    private let context = CIContext()
     private var queue = DispatchQueue(label: "com.haishinkit.NetStreamDrawableTexture")
     private var currentStream: NetStream?
 
@@ -25,7 +28,51 @@ class NetStreamDrawableTexture: NSObject, FlutterTexture {
             let imageBuffer = CMSampleBufferGetImageBuffer(currentSampleBuffer) else {
             return nil
         }
-        return Unmanaged<CVPixelBuffer>.passRetained(imageBuffer)
+
+        let displayImage = CIImage(cvPixelBuffer: imageBuffer)
+        var scaleX: CGFloat = 0
+        var scaleY: CGFloat = 0
+        var translationX: CGFloat = 0
+        var translationY: CGFloat = 0
+        switch videoGravity {
+        case .resize:
+            scaleX = bounds.width / displayImage.extent.width
+            scaleY = bounds.height / displayImage.extent.height
+        case .resizeAspect:
+            let scale: CGFloat = min(bounds.width / displayImage.extent.width, bounds.height / displayImage.extent.height)
+            scaleX = scale
+            scaleY = scale
+            translationX = (bounds.width - displayImage.extent.width * scale) / scaleX / 2
+            translationY = (bounds.height - displayImage.extent.height * scale) / scaleY / 2
+        case .resizeAspectFill:
+            let scale: CGFloat = max(bounds.width / displayImage.extent.width, bounds.height / displayImage.extent.height)
+            scaleX = scale
+            scaleY = scale
+            translationX = (bounds.width - displayImage.extent.width * scale) / scaleX / 2
+            translationY = (bounds.height - displayImage.extent.height * scale) / scaleY / 2
+        default:
+            break
+        }
+
+        var scaledImage: CIImage = displayImage
+            .transformed(by: CGAffineTransform(translationX: translationX, y: translationY))
+            .transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
+
+        let options = [
+                  kCVPixelBufferCGImageCompatibilityKey as String: true,
+                  kCVPixelBufferCGBitmapContextCompatibilityKey as String: true,
+                  kCVPixelBufferIOSurfacePropertiesKey as String: [:]
+                  ] as [String : Any]
+        
+        var pixelBuffer: CVPixelBuffer?
+        CVPixelBufferCreate(kCFAllocatorDefault, Int(bounds.width), Int(bounds.height), kCVPixelFormatType_32BGRA, options as CFDictionary?, &pixelBuffer)
+
+        if let pixelBuffer = pixelBuffer {
+            context.render(scaledImage, to: pixelBuffer)
+            return Unmanaged<CVPixelBuffer>.passRetained(pixelBuffer)
+        }
+
+        return nil
     }
 }
 

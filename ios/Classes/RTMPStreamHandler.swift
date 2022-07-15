@@ -114,6 +114,12 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
                 }
                 result(texture.id)
             } else {
+                if let texture = instance?.mixer.drawable as? NetStreamDrawableTexture {
+                    if let width = arguments["width"] as? NSNumber,
+                       let height = arguments["height"] as? NSNumber {
+                        texture.bounds = CGSize(width: width.doubleValue, height: height.doubleValue)
+                    }
+                }
                 result(nil)
             }
         case "RtmpStream#dispose":
