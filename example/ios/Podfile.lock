@@ -4,8 +4,8 @@ PODS:
   - Flutter (1.0.0)
   - haishin_kit (0.9.0):
     - Flutter
-    - HaishinKit (= 1.2.6)
-  - HaishinKit (1.2.6):
+    - HaishinKit (= 1.2.7)
+  - HaishinKit (1.2.7):
     - Logboard (~> 2.2.2)
   - Logboard (2.2.2)
   - permission_handler_apple (9.0.4):
@@ -35,8 +35,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
-  haishin_kit: 09460f402b7d7fd3bf89926e16107876e66e0d2d
-  HaishinKit: 70d836491b7041b470d5f30e9325e1045ff83dfc
+  haishin_kit: 593fb46f89f1d34dfd5f309edd9f5f59a6a8c99f
+  HaishinKit: 5463efd52fa4de2018db95547a5b09ce50495444
   Logboard: 0ab6bbd984ed032b3f0b615cef06779a73445c80
   permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
 

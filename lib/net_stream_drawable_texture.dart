@@ -30,8 +30,9 @@ class _NetStreamDrawableState extends State<NetStreamDrawableTexture> {
   @override
   Widget build(BuildContext context) {
     if (_textureId == null) {
-      return Text(
-          '$defaultTargetPlatform is not yet supported by the text_view plugin');
+      return Container(
+        color: Colors.black,
+      );
     }
     _updatePlatformState(MediaQuery.of(context));
     return Texture(textureId: _textureId!);

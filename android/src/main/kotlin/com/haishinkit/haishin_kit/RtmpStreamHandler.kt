@@ -121,6 +121,13 @@ class RtmpStreamHandler(
                 instance?.publish(call.argument("name"))
                 result.success(null)
             }
+            "$TAG#play" -> {
+                val name = call.argument<String>("name")
+                if (name != null) {
+                    instance?.play(name)
+                }
+                result.success(null)
+            }
             "$TAG#dispose" -> {
                 eventSink?.endOfStream()
                 instance = null

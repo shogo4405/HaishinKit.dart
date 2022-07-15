@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
+import 'package:haishin_kit/audio_settings.dart';
 import 'package:haishin_kit/audio_source.dart';
 import 'package:haishin_kit/net_stream_drawable_texture.dart';
 import 'package:haishin_kit/rtmp_connection.dart';
 import 'package:haishin_kit/rtmp_stream.dart';
+import 'package:haishin_kit/video_settings.dart';
 import 'package:haishin_kit/video_source.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -24,6 +26,7 @@ class _MyAppState extends State<MyApp> {
   RtmpConnection? _connection;
   RtmpStream? _stream;
   bool _recording = false;
+  String _mode = "publish";
   CameraPosition currentPosition = CameraPosition.back;
 
   @override
@@ -55,14 +58,25 @@ class _MyAppState extends State<MyApp> {
     connection.eventChannel.receiveBroadcastStream().listen((event) {
       switch (event["data"]["code"]) {
         case 'NetConnection.Connect.Success':
-          _stream?.publish("live");
+          if (_mode == "publish") {
+            _stream?.publish("live");
+          } else {
+            _stream?.play("live");
+          }
           setState(() {
             _recording = true;
           });
           break;
       }
     });
+
     RtmpStream stream = await RtmpStream.create(connection);
+    stream.audioSettings = AudioSettings(muted: false, bitrate: 64 * 1000);
+    stream.videoSettings = VideoSettings(
+      width: 480,
+      height: 272,
+      bitrate: 512 * 1000,
+    );
     stream.attachAudio(AudioSource());
     stream.attachVideo(VideoSource(position: currentPosition));
 
@@ -79,6 +93,20 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('HaishinKit'), actions: [
+          IconButton(
+            icon: const Icon(Icons.play_arrow),
+            onPressed: () {
+              if (_mode == "publish") {
+                _mode = "playback";
+                _stream?.attachVideo(null);
+                _stream?.attachAudio(null);
+              } else {
+                _mode = "publish";
+                _stream?.attachAudio(AudioSource());
+                _stream?.attachVideo(VideoSource(position: currentPosition));
+              }
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.flip_camera_android),
             onPressed: () {
