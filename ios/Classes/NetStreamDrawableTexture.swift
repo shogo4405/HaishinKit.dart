@@ -4,6 +4,12 @@ import HaishinKit
 import AVFoundation
 
 class NetStreamDrawableTexture: NSObject, FlutterTexture {
+    static let defaultOptions: [String: Any] = [
+        kCVPixelBufferCGImageCompatibilityKey as String: true,
+        kCVPixelBufferCGBitmapContextCompatibilityKey as String: true,
+        kCVPixelBufferIOSurfacePropertiesKey as String: [:]
+    ]
+
     var id: Int64 = 0
     var orientation: AVCaptureVideoOrientation = .portrait
     var position: AVCaptureDevice.Position = .back
@@ -54,18 +60,12 @@ class NetStreamDrawableTexture: NSObject, FlutterTexture {
             break
         }
 
-        var scaledImage: CIImage = displayImage
+        let scaledImage: CIImage = displayImage
             .transformed(by: CGAffineTransform(translationX: translationX, y: translationY))
             .transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
 
-        let options = [
-                  kCVPixelBufferCGImageCompatibilityKey as String: true,
-                  kCVPixelBufferCGBitmapContextCompatibilityKey as String: true,
-                  kCVPixelBufferIOSurfacePropertiesKey as String: [:]
-                  ] as [String : Any]
-        
         var pixelBuffer: CVPixelBuffer?
-        CVPixelBufferCreate(kCFAllocatorDefault, Int(bounds.width), Int(bounds.height), kCVPixelFormatType_32BGRA, options as CFDictionary?, &pixelBuffer)
+        CVPixelBufferCreate(kCFAllocatorDefault, Int(bounds.width), Int(bounds.height), kCVPixelFormatType_32BGRA, Self.defaultOptions as CFDictionary?, &pixelBuffer)
 
         if let pixelBuffer = pixelBuffer {
             context.render(scaledImage, to: pixelBuffer)
