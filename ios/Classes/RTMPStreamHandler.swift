@@ -137,7 +137,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
         let event = Event.from(notification)
         var map: [String: Any?] = [:]
         map["type"] = event.type.rawValue
-        map["data"] = event.data
+        map["data"] = AnyUtil.removeEmpty(event.data)
         eventSink?(map)
     }
 
