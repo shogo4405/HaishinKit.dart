@@ -40,7 +40,7 @@ class RtmpStream extends NetStream {
   set videoSettings(VideoSettings videoSettings) {
     assert(_memory != null);
     _videoSettings = videoSettings;
-    RtmpStreamPlatform.instance.setAudioSettings(
+    RtmpStreamPlatform.instance.setVideoSettings(
         {"memory": _memory, "settings": videoSettings.toMap()});
   }
 
@@ -60,7 +60,7 @@ class RtmpStream extends NetStream {
   set captureSettings(CaptureSettings captureSettings) {
     assert(_memory != null);
     _captureSettings = captureSettings;
-    RtmpStreamPlatform.instance.setAudioSettings(
+    RtmpStreamPlatform.instance.setCaptureSettings(
         {"memory": _memory, "settings": captureSettings.toMap()});
   }
 
