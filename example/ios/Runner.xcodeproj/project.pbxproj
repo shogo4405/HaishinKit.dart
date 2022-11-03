@@ -17,6 +17,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		BC0207CD2913A64E00A0B3DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC781CD5287259FB00DE3021 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DA105FC7B7CEC70A42A6278B43296D3C;
+			remoteInfo = audio_session;
+		};
 		BC781CDE287259FB00DE3021 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BC781CD5287259FB00DE3021 /* Pods.xcodeproj */;
@@ -167,6 +174,7 @@
 		BC781CD6287259FB00DE3021 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				BC0207CE2913A64E00A0B3DF /* audio_session */,
 				BC781CDF287259FB00DE3021 /* haishin_kit */,
 				BC781CE1287259FB00DE3021 /* HaishinKit */,
 				BC781CE3287259FB00DE3021 /* Logboard */,
@@ -241,6 +249,14 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		BC0207CE2913A64E00A0B3DF /* audio_session */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			name = audio_session;
+			path = audio_session.framework;
+			remoteRef = BC0207CD2913A64E00A0B3DF /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		BC781CDF287259FB00DE3021 /* haishin_kit */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
