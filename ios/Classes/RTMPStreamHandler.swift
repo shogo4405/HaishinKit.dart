@@ -2,6 +2,7 @@ import Foundation
 import Flutter
 import HaishinKit
 import AVFoundation
+import VideoToolbox
 
 class RTMPStreamHandler: NSObject, MethodCallHandler {
     private let plugin: SwiftHaishinKitPlugin
@@ -67,6 +68,21 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
             }
             if let frameInterval = settings["frameInterval"] as? NSNumber {
                 instance?.videoSettings[.maxKeyFrameIntervalDuration] = frameInterval.intValue
+            }
+            result(nil)
+        case "RtmpStream#setCaptureSettings":
+            guard
+                let settings = arguments["settings"] as? [String: Any?] else {
+                return
+            }
+            if let fps = settings["fps"] as? NSNumber {
+                instance?.captureSettings[.fps] = fps.intValue
+            }
+            if let continuousAutofocus = settings["continuousAutofocus"] as? Bool {
+                instance?.captureSettings[.continuousAutofocus] = continuousAutofocus
+            }
+            if let continuousExposure = settings["continuousExposure"] as? Bool {
+                instance?.captureSettings[.continuousExposure] = continuousExposure
             }
             result(nil)
         case "RtmpStream#attachAudio":
