@@ -1,3 +1,6 @@
+## 0.9.2
+* Fix setAudioSettings were used instead of setVideoSettings.
+
 ## 0.9.1
 * Support rotate with a device orientation.
 * Support dispose platform interface.
