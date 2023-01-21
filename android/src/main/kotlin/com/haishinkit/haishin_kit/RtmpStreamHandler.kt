@@ -22,10 +22,18 @@ class RtmpStreamHandler(
         private const val TAG = "RtmpStream"
     }
 
-    var instance: RtmpStream? = null
+    private var instance: RtmpStream? = null
+        set(value) {
+            field?.dispose()
+            field = value
+        }
     private var channel: EventChannel
     private var eventSink: EventChannel.EventSink? = null
-    private var camera = Camera2Source(plugin.flutterPluginBinding.applicationContext)
+    private var camera: Camera2Source? = null
+        set(value) {
+            field?.close()
+            field = value
+        }
 
     init {
         handler?.instance?.let {
@@ -79,6 +87,7 @@ class RtmpStreamHandler(
                 val source = call.argument<Map<String, Any?>>("source")
                 if (source == null) {
                     instance?.attachVideo(null)
+                    camera = null
                 } else {
                     var index = 0
                     when (source["position"] as? String) {
@@ -89,9 +98,12 @@ class RtmpStreamHandler(
                             index = CameraCharacteristics.LENS_FACING_BACK
                         }
                     }
-                    instance?.attachVideo(camera)
+                    camera = Camera2Source(plugin.flutterPluginBinding.applicationContext)
+                    camera?.let {
+                        instance?.attachVideo(camera)
+                    }
                     if (instance?.drawable != null) {
-                        camera.open(index)
+                        camera?.open(index)
                     }
                 }
                 result.success(null)
@@ -101,8 +113,8 @@ class RtmpStreamHandler(
                 if (netStream?.drawable == null) {
                     val texture = NetStreamDrawableTexture(plugin.flutterPluginBinding)
                     texture.attachStream(netStream)
-                    if (camera.stream != null) {
-                        camera.open()
+                    if (camera?.stream != null) {
+                        camera?.open()
                     }
                     result.success(texture.id)
                 } else {
