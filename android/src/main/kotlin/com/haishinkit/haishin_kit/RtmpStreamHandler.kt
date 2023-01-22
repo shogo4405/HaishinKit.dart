@@ -143,6 +143,7 @@ class RtmpStreamHandler(
             "$TAG#dispose" -> {
                 eventSink?.endOfStream()
                 instance = null
+                camera = null
                 plugin.onDispose(hashCode())
                 result.success(null)
             }

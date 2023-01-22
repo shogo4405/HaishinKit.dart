@@ -1,3 +1,7 @@
+## 0.9.3
+* Bump up HaishinKit.kt to 0.10.4
+* Improved compatibility some services.
+
 ## 0.9.2
 * Fix setAudioSettings were used instead of setVideoSettings.
 
