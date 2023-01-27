@@ -53,6 +53,9 @@ class RtmpStreamHandler(
                 (source["bitrate"] as? Int)?.let {
                     instance?.audioSetting?.bitRate = it
                 }
+                (source["muted"] as? Boolean)?.let {
+                    instance?.audioSetting?.muted = it
+                }
                 result.success(null)
             }
             "$TAG#setVideoSettings" -> {
