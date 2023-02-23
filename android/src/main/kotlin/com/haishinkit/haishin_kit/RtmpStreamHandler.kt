@@ -102,7 +102,10 @@ class RtmpStreamHandler(
                             facing = CameraCharacteristics.LENS_FACING_BACK
                         }
                     }
-                    instance?.attachVideo(camera)
+                    camera = Camera2Source(plugin.flutterPluginBinding.applicationContext)
+                    camera?.let {
+                        instance?.attachVideo(camera)
+                    }
                     val handler = Handler()
                     handler.postDelayed({
                         if (instance?.drawable != null) {
