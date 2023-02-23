@@ -122,8 +122,11 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
                 }
                 result(nil)
             }
+        case "RtmpStream#close":
+            instance?.close()
         case "RtmpStream#dispose":
             instance?.removeEventListener(.rtmpStatus, selector: #selector(handler))
+            instance?.close()
             instance = nil
             plugin.onDispose(id: Int(bitPattern: ObjectIdentifier(self)))
             result(nil)

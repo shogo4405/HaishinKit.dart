@@ -2,6 +2,7 @@ package com.haishinkit.haishin_kit
 
 import android.content.Context
 import android.hardware.camera2.CameraCharacteristics
+import android.os.Handler
 import android.util.Size
 import android.view.WindowManager
 import com.haishinkit.event.Event
@@ -92,22 +93,22 @@ class RtmpStreamHandler(
                     instance?.attachVideo(null)
                     camera = null
                 } else {
-                    var index = 0
-                    when (source["position"] as? String) {
+                    var facing = 0
+                    when (source["position"]) {
                         "front" -> {
-                            index = CameraCharacteristics.LENS_FACING_FRONT
+                            facing = CameraCharacteristics.LENS_FACING_FRONT
                         }
                         "back" -> {
-                            index = CameraCharacteristics.LENS_FACING_BACK
+                            facing = CameraCharacteristics.LENS_FACING_BACK
                         }
                     }
-                    camera = Camera2Source(plugin.flutterPluginBinding.applicationContext)
-                    camera?.let {
-                        instance?.attachVideo(camera)
-                    }
-                    if (instance?.drawable != null) {
-                        camera?.open(index)
-                    }
+                    instance?.attachVideo(camera)
+                    val handler = Handler()
+                    handler.postDelayed({
+                        if (instance?.drawable != null) {
+                            camera.open(facing)
+                        }
+                    }, 750)
                 }
                 result.success(null)
             }
@@ -143,8 +144,14 @@ class RtmpStreamHandler(
                 }
                 result.success(null)
             }
+            "$TAG#close" -> {
+                instance?.close()
+            }
             "$TAG#dispose" -> {
                 eventSink?.endOfStream()
+                instance?.close()
+                camera.close()
+                instance?.dispose()
                 instance = null
                 camera = null
                 plugin.onDispose(hashCode())
