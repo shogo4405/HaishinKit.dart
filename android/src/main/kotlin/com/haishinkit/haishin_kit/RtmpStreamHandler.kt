@@ -106,7 +106,7 @@ class RtmpStreamHandler(
                     val handler = Handler()
                     handler.postDelayed({
                         if (instance?.drawable != null) {
-                            camera.open(facing)
+                            camera?.open(facing)
                         }
                     }, 750)
                 }
@@ -150,7 +150,7 @@ class RtmpStreamHandler(
             "$TAG#dispose" -> {
                 eventSink?.endOfStream()
                 instance?.close()
-                camera.close()
+                camera?.close()
                 instance?.dispose()
                 instance = null
                 camera = null
