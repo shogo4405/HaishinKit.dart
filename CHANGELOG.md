@@ -1,3 +1,7 @@
+## 0.9.4
+* Closing & disposing fixes. Fixed android camera facing.
+* Fix: Android - Pass audioSettings.muted to RtmpStream.
+
 ## 0.9.3
 * Bump up HaishinKit.kt to 0.10.4
 * Improved compatibility some services.
