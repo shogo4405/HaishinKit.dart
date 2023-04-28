@@ -2,6 +2,7 @@ package com.haishinkit.haishin_kit
 
 import android.content.Context
 import android.hardware.camera2.CameraCharacteristics
+import android.os.Handler
 import android.util.Size
 import android.view.WindowManager
 import com.haishinkit.event.Event
@@ -22,10 +23,18 @@ class RtmpStreamHandler(
         private const val TAG = "RtmpStream"
     }
 
-    var instance: RtmpStream? = null
+    private var instance: RtmpStream? = null
+        set(value) {
+            field?.dispose()
+            field = value
+        }
     private var channel: EventChannel
     private var eventSink: EventChannel.EventSink? = null
-    private var camera = Camera2Source(plugin.flutterPluginBinding.applicationContext)
+    private var camera: Camera2Source? = null
+        set(value) {
+            field?.close()
+            field = value
+        }
 
     init {
         handler?.instance?.let {
@@ -44,6 +53,9 @@ class RtmpStreamHandler(
                 val source = call.argument<Map<String, Any?>>("settings") ?: return
                 (source["bitrate"] as? Int)?.let {
                     instance?.audioSetting?.bitRate = it
+                }
+                (source["muted"] as? Boolean)?.let {
+                    instance?.audioSetting?.muted = it
                 }
                 result.success(null)
             }
@@ -79,20 +91,27 @@ class RtmpStreamHandler(
                 val source = call.argument<Map<String, Any?>>("source")
                 if (source == null) {
                     instance?.attachVideo(null)
+                    camera = null
                 } else {
-                    var index = 0
-                    when (source["position"] as? String) {
+                    var facing = 0
+                    when (source["position"]) {
                         "front" -> {
-                            index = CameraCharacteristics.LENS_FACING_FRONT
+                            facing = CameraCharacteristics.LENS_FACING_FRONT
                         }
                         "back" -> {
-                            index = CameraCharacteristics.LENS_FACING_BACK
+                            facing = CameraCharacteristics.LENS_FACING_BACK
                         }
                     }
-                    instance?.attachVideo(camera)
-                    if (instance?.drawable != null) {
-                        camera.open(index)
+                    camera = Camera2Source(plugin.flutterPluginBinding.applicationContext)
+                    camera?.let {
+                        instance?.attachVideo(camera)
                     }
+                    val handler = Handler()
+                    handler.postDelayed({
+                        if (instance?.drawable != null) {
+                            camera?.open(facing)
+                        }
+                    }, 750)
                 }
                 result.success(null)
             }
@@ -101,8 +120,8 @@ class RtmpStreamHandler(
                 if (netStream?.drawable == null) {
                     val texture = NetStreamDrawableTexture(plugin.flutterPluginBinding)
                     texture.attachStream(netStream)
-                    if (camera.stream != null) {
-                        camera.open()
+                    if (camera?.stream != null) {
+                        camera?.open()
                     }
                     result.success(texture.id)
                 } else {
@@ -128,9 +147,16 @@ class RtmpStreamHandler(
                 }
                 result.success(null)
             }
+            "$TAG#close" -> {
+                instance?.close()
+            }
             "$TAG#dispose" -> {
                 eventSink?.endOfStream()
+                instance?.close()
+                camera?.close()
+                instance?.dispose()
                 instance = null
+                camera = null
                 plugin.onDispose(hashCode())
                 result.success(null)
             }

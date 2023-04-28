@@ -4,9 +4,9 @@
 
 * A Flutter plugin for iOS, Android. Camera and Microphone streaming library via RTMP.
 
-|                | Android | iOS      | 
-|----------------|---------|----------|
-| **Support**    | SDK 21+ | iOS 9.0+ |
+|                | Android | iOS       | 
+|----------------|---------|-----------|
+| **Support**    | SDK 21+ | iOS 12.0+ |
 
 # 🌏 Dependencies
 

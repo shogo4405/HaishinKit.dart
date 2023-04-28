@@ -122,8 +122,11 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
                 }
                 result(nil)
             }
+        case "RtmpStream#close":
+            instance?.close()
         case "RtmpStream#dispose":
             instance?.removeEventListener(.rtmpStatus, selector: #selector(handler))
+            instance?.close()
             instance = nil
             plugin.onDispose(id: Int(bitPattern: ObjectIdentifier(self)))
             result(nil)
@@ -137,7 +140,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
         let event = Event.from(notification)
         var map: [String: Any?] = [:]
         map["type"] = event.type.rawValue
-        map["data"] = AnyUtil.removeEmpty(event.data)
+        map["data"] = ASObjectUtil.removeEmpty(event.data)
         eventSink?(map)
     }
 
