@@ -1,5 +1,5 @@
 group 'com.haishinkit.haishin_kit'
-version '0.9.3'
+version '0.10.0'
 
 buildscript {
     ext.kotlin_version = '1.8.0'
@@ -29,12 +29,12 @@ android {
     compileSdkVersion 33
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     sourceSets {
@@ -47,5 +47,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.shogo4405.HaishinKit~kt:haishinkit:0.10.4'
+    implementation 'com.github.shogo4405.HaishinKit~kt:haishinkit:0.11.0'
 }
