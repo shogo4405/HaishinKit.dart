@@ -84,6 +84,52 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
             if let continuousExposure = settings["continuousExposure"] as? Bool {
                 instance?.captureSettings[.continuousExposure] = continuousExposure
             }
+            if let sessionPreset = settings["sessionPreset"] as? String {
+                switch sessionPreset {
+                    case "high":
+                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
+                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.high
+                    case "medium":
+                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_Main_AutoLevel
+                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.medium
+                    case "low":
+                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_Baseline_3_1
+                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.low
+                    case "photo":
+                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
+                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.photo
+                    case "qHD960x540":
+                        // macos only
+                        ()
+                    case "hd1280x720":
+                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
+                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.hd1280x720
+                    case "hd1920x1080":
+                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
+                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.hd1920x1080
+                    case "hd4K3840x2160":
+                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
+                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.hd4K3840x2160
+                    case "qvga320x240":
+                        // macos only
+                        ()
+                    case "vga640x480":
+                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
+                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.vga640x480
+                    case "iFrame960x540":
+                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
+                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.iFrame960x540
+                    case "iFrame1280x720":
+                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
+                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.iFrame1280x720
+                    case "cif352x288":
+                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
+                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.cif352x288
+                    default:
+                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_Main_AutoLevel
+                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.medium
+                }
+            }
             result(nil)
         case "RtmpStream#attachAudio":
             let source = arguments["source"] as? [String: Any?]
