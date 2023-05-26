@@ -86,7 +86,7 @@ class CaptureSettings {
       fps: map['fps'] as int,
       continuousAutofocus: map['continuousAutofocus'] as bool,
       continuousExposure: map['continuousExposure'] as bool,
-      sessionPreset: AVCaptureSessionPreset.values.byName(map['continuousExposure'] as String),
+      sessionPreset: AVCaptureSessionPreset.values.byName(map['sessionPreset'] as String),
     );
   }
 }
