@@ -2,17 +2,22 @@ package com.haishinkit.haishin_kit
 
 import android.content.Context
 import android.hardware.camera2.CameraCharacteristics
+import android.media.MediaFormat.KEY_LEVEL
+import android.media.MediaFormat.KEY_PROFILE
 import android.os.Handler
 import android.util.Size
 import android.view.WindowManager
+import com.haishinkit.codec.CodecOption
 import com.haishinkit.event.Event
 import com.haishinkit.event.IEventListener
+import com.haishinkit.haishinkit.ProfileLevel
 import com.haishinkit.media.AudioRecordSource
 import com.haishinkit.media.Camera2Source
 import com.haishinkit.rtmp.RtmpStream
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import java.lang.Exception
 
 class RtmpStreamHandler(
     private val plugin: HaishinKitPlugin,
@@ -72,6 +77,17 @@ class RtmpStreamHandler(
                 }
                 (source["bitrate"] as? Int)?.let {
                     instance?.videoSetting?.bitRate = it
+                }
+                (source["profileLevel"] as? String)?.let {
+                    try {
+                        val profileLevel = ProfileLevel.valueOf(it)
+                        var options = mutableListOf<CodecOption>()
+                        options.add(CodecOption(KEY_PROFILE, profileLevel.profile))
+                        options.add(CodecOption(KEY_LEVEL, profileLevel.level))
+                        instance?.videoSetting?.options = options
+                    } catch (ignored: Exception) {
+                        // Do nothing, use default setting
+                    }
                 }
                 result.success(null)
             }
