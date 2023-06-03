@@ -1,6 +1,6 @@
 name: haishin_kit
 description: A Flutter plugin for Camera and Microphone streaming library via RTMP.
-version: 0.9.4
+version: 0.10.0
 homepage: https://github.com/shogo4405/HaishinKit.dart
 
 environment:

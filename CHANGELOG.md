@@ -1,3 +1,8 @@
+## 0.10.0
+* Added sessionPreset to change camera quality in CaptureSettings for ios only.
+* Bump up HaishinKit.kt to 0.10.0
+* Feature: add setCaptureSettings
+
 ## 0.9.4
 * Closing & disposing fixes. Fixed android camera facing.
 * Fix: Android - Pass audioSettings.muted to RtmpStream.
