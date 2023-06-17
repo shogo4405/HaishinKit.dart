@@ -7,7 +7,7 @@ class NetStreamDrawableTexture: NSObject, FlutterTexture {
     static let defaultOptions: [String: Any] = [
         kCVPixelBufferCGImageCompatibilityKey as String: true,
         kCVPixelBufferCGBitmapContextCompatibilityKey as String: true,
-        kCVPixelBufferIOSurfacePropertiesKey as String: [:]
+        kCVPixelBufferIOSurfacePropertiesKey as String: NSDictionary()
     ]
 
     var id: Int64 = 0
@@ -16,6 +16,7 @@ class NetStreamDrawableTexture: NSObject, FlutterTexture {
     var videoFormatDescription: CMVideoFormatDescription?
     var bounds: CGSize = .zero
     var videoGravity: AVLayerVideoGravity = .resizeAspectFill
+    var videoOrientation: AVCaptureVideoOrientation = .portrait
     private var currentSampleBuffer: CMSampleBuffer?
     private let registry: FlutterTextureRegistry
     private let context = CIContext()

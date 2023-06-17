@@ -71,7 +71,7 @@ class _MyAppState extends State<MyApp> {
     });
 
     RtmpStream stream = await RtmpStream.create(connection);
-    stream.audioSettings = AudioSettings(muted: false, bitrate: 64 * 1000);
+    stream.audioSettings = AudioSettings(bitrate: 64 * 1000);
     stream.videoSettings = VideoSettings(
       width: 480,
       height: 272,

@@ -4,7 +4,7 @@ import HaishinKit
 enum ASObjectUtil {
     static func removeEmpty(_ value: Any?) -> Any? {
         if var value = value as? ASObject {
-            for var element in value {
+            for element in value {
                 value[element.key] = removeEmpty(element.value)
             }
             return value.isEmpty ? nil : value
@@ -17,7 +17,7 @@ enum ASObjectUtil {
             return result.isEmpty ? nil : result
         }
         if let value = value {
-            if (value is ASUndefined) {
+            if value is ASUndefined {
                 return nil
             }
             return value
@@ -25,4 +25,3 @@ enum ASObjectUtil {
         return nil
     }
 }
-

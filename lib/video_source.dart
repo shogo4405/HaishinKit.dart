@@ -21,7 +21,7 @@ class VideoSource {
 
   @override
   String toString() {
-    return 'VideoSource{' + ' position: $position,' + '}';
+    return 'VideoSource{position: $position}';
   }
 
   VideoSource copyWith({
