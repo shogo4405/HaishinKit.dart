@@ -24,7 +24,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
             let instance = RTMPStream(connection: connection)
             instance.addEventListener(.rtmpStatus, selector: #selector(RTMPStreamHandler.handler), observer: self)
             if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
-                instance.orientation = orientation
+                instance.videoOrientation = orientation
             }
             NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
             self.instance = instance
@@ -34,104 +34,93 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard
             let arguments = call.arguments as? [String: Any?] else {
+            result(nil)
             return
         }
         switch call.method {
+        case "RtmpStream#getHasAudio":
+            result(instance?.hasAudio)
+        case "RtmpStream#setHasAudio":
+            guard let hasAudio = arguments["value"] as? Bool else {
+                result(nil)
+                return
+            }
+            instance?.hasAudio = hasAudio
+            result(nil)
+        case "RtmpStream#getHasVudio":
+            result(instance?.hasVideo)
+        case "RtmpStream#setHasVudio":
+            guard let hasVideo = arguments["value"] as? Bool else {
+                result(nil)
+                return
+            }
+            instance?.hasVideo = hasVideo
+            result(nil)
+        case "RtmpStream#setFrameRate":
+            guard
+                let frameRate = arguments["value"] as? NSNumber else {
+                result(nil)
+                return
+            }
+            instance?.frameRate = frameRate.doubleValue
+            result(nil)
+        case "RtmpStream#setSessionPreset":
+            guard let sessionPreset = arguments["value"] as? String else {
+                result(nil)
+                return
+            }
+            switch sessionPreset {
+            case "high":
+                instance?.sessionPreset = .high
+            case "medium":
+                instance?.sessionPreset = .medium
+            case "low":
+                instance?.sessionPreset = .low
+            case "hd1280x720":
+                instance?.sessionPreset = .hd1280x720
+            case "hd1920x1080":
+                instance?.sessionPreset = .hd1920x1080
+            case "hd4K3840x2160":
+                instance?.sessionPreset = .hd4K3840x2160
+            case "vga640x480":
+                instance?.sessionPreset = .vga640x480
+            case "iFrame960x540":
+                instance?.sessionPreset = .iFrame960x540
+            case "iFrame1280x720":
+                instance?.sessionPreset = .iFrame1280x720
+            case "cif352x288":
+                instance?.sessionPreset = .cif352x288
+            default:
+                instance?.sessionPreset = AVCaptureSession.Preset.hd1280x720
+            }
+            result(nil)
         case "RtmpStream#setAudioSettings":
             guard
                 let settings = arguments["settings"] as? [String: Any?] else {
+                result(nil)
                 return
             }
-            if let muted = settings["muted"] as? Bool {
-                instance?.audioSettings[.muted] = muted
-            }
             if let bitrate = settings["bitrate"] as? NSNumber {
-                instance?.audioSettings[.bitrate] = bitrate.intValue
+                instance?.audioSettings.bitRate = bitrate.intValue
             }
             result(nil)
         case "RtmpStream#setVideoSettings":
             guard
                 let settings = arguments["settings"] as? [String: Any?] else {
+                result(nil)
                 return
-            }
-            if let muted = settings["muted"] as? Bool {
-                instance?.videoSettings[.muted] = muted
             }
             if let bitrate = settings["bitrate"] as? NSNumber {
-                instance?.videoSettings[.bitrate] = bitrate.intValue
+                instance?.videoSettings.bitRate = bitrate.uint32Value
             }
-            if let width = settings["width"] as? NSNumber {
-                instance?.videoSettings[.width] = width.intValue
-            }
-            if let height = settings["height"] as? NSNumber {
-                instance?.videoSettings[.height] = height.intValue
+            if let width = settings["width"] as? NSNumber, let height = settings["height"] as? NSNumber {
+                instance?.videoSettings.videoSize = .init(width: width.int32Value, height: height.int32Value)
             }
             if let frameInterval = settings["frameInterval"] as? NSNumber {
-                instance?.videoSettings[.maxKeyFrameIntervalDuration] = frameInterval.intValue
+                instance?.videoSettings.maxKeyFrameIntervalDuration = frameInterval.int32Value
             }
             if let profileLevel = settings["profileLevel"] as? String {
-                instance?.videoSettings[.profileLevel] = ProfileLevel(rawValue: profileLevel)?.kVTProfileLevel ?? ProfileLevel.H264_Baseline_AutoLevel
-            }
-            result(nil)
-        case "RtmpStream#setCaptureSettings":
-            guard
-                let settings = arguments["settings"] as? [String: Any?] else {
-                return
-            }
-            if let fps = settings["fps"] as? NSNumber {
-                instance?.captureSettings[.fps] = fps.intValue
-            }
-            if let continuousAutofocus = settings["continuousAutofocus"] as? Bool {
-                instance?.captureSettings[.continuousAutofocus] = continuousAutofocus
-            }
-            if let continuousExposure = settings["continuousExposure"] as? Bool {
-                instance?.captureSettings[.continuousExposure] = continuousExposure
-            }
-            if let sessionPreset = settings["sessionPreset"] as? String {
-                switch sessionPreset {
-                    case "high":
-                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
-                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.high
-                    case "medium":
-                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_Main_AutoLevel
-                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.medium
-                    case "low":
-                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_Baseline_3_1
-                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.low
-                    case "photo":
-                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
-                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.photo
-                    case "qHD960x540":
-                        // macos only
-                        ()
-                    case "hd1280x720":
-                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
-                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.hd1280x720
-                    case "hd1920x1080":
-                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
-                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.hd1920x1080
-                    case "hd4K3840x2160":
-                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
-                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.hd4K3840x2160
-                    case "qvga320x240":
-                        // macos only
-                        ()
-                    case "vga640x480":
-                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
-                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.vga640x480
-                    case "iFrame960x540":
-                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
-                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.iFrame960x540
-                    case "iFrame1280x720":
-                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
-                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.iFrame1280x720
-                    case "cif352x288":
-                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_High_AutoLevel
-                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.cif352x288
-                    default:
-                        instance?.videoSettings[.profileLevel] = kVTProfileLevel_H264_Main_AutoLevel
-                        instance?.captureSettings[.sessionPreset] = AVCaptureSession.Preset.medium
-                }
+                instance?.videoSettings.profileLevel = ProfileLevel(rawValue: profileLevel)?.kVTProfileLevel ?? ProfileLevel.H264_Baseline_AutoLevel.kVTProfileLevel
             }
             result(nil)
         case "RtmpStream#attachAudio":
@@ -158,7 +147,9 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
                         break
                     }
                 }
-                instance?.attachCamera(DeviceUtil.device(withPosition: devicePosition))
+                if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: devicePosition) {
+                    instance?.attachCamera(device)
+                }
             }
             result(nil)
         case "RtmpStream#play":
@@ -170,6 +161,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
         case "RtmpStream#registerTexture":
             guard
                 let registry = plugin.registrar?.textures() else {
+                result(nil)
                 return
             }
             if instance?.mixer.drawable == nil {
@@ -189,6 +181,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
             }
         case "RtmpStream#close":
             instance?.close()
+            result(nil)
         case "RtmpStream#dispose":
             instance?.removeEventListener(.rtmpStatus, selector: #selector(handler))
             instance?.close()
@@ -214,7 +207,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
         guard let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) else {
             return
         }
-        instance?.orientation = orientation
+        instance?.videoOrientation = orientation
     }
 }
 

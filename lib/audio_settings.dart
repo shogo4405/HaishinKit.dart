@@ -1,11 +1,9 @@
 class AudioSettings {
-  bool muted;
   int bitrate;
 
 //<editor-fold desc="Data Methods">
 
   AudioSettings({
-    this.muted = false,
     this.bitrate = 80 * 1000,
   });
 
@@ -14,15 +12,14 @@ class AudioSettings {
       identical(this, other) ||
       (other is AudioSettings &&
           runtimeType == other.runtimeType &&
-          muted == other.muted &&
           bitrate == other.bitrate);
 
   @override
-  int get hashCode => muted.hashCode ^ bitrate.hashCode;
+  int get hashCode => bitrate.hashCode;
 
   @override
   String toString() {
-    return 'AudioSettings{' + ' muted: $muted,' + ' bitrate: $bitrate,' + '}';
+    return 'AudioSettings{ bitrate: $bitrate,}';
   }
 
   AudioSettings copyWith({
@@ -30,21 +27,18 @@ class AudioSettings {
     int? bitrate,
   }) {
     return AudioSettings(
-      muted: muted ?? this.muted,
       bitrate: bitrate ?? this.bitrate,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'muted': this.muted,
-      'bitrate': this.bitrate,
+      'bitrate': bitrate,
     };
   }
 
   factory AudioSettings.fromMap(Map<String, dynamic> map) {
     return AudioSettings(
-      muted: map['muted'] as bool,
       bitrate: map['bitrate'] as int,
     );
   }
