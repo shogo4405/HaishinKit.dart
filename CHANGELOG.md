@@ -1,3 +1,6 @@
+## 0.11.0
+* Bump up HaishinKit.swift to 1.5.3.
+
 ## 0.10.0
 * Added sessionPreset to change camera quality in CaptureSettings for ios only.
 * Bump up HaishinKit.kt to 0.10.0
