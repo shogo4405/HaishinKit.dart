@@ -14,7 +14,7 @@ abstract class NetStream {
   int get frameRate;
 
   /// Sets the frameRate.
-  void set frameRate(int value);
+  set frameRate(int value);
 
   /// Specifies the sessionPreset for iOS.
   set sessionPreset(AVCaptureSessionPreset value);
@@ -25,7 +25,7 @@ abstract class NetStream {
   /// Specifies the audio compression properties.
   set audioSettings(AudioSettings audioSettings);
 
-  /// Gets the hasAuio property.
+  /// Gets the hasAudio property.
   Future<bool?> getHasAudio();
 
   /// Sets the hasAudio property.
