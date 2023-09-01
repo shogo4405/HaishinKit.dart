@@ -42,6 +42,7 @@ class RtmpStreamHandler(
     init {
         handler?.instance?.let {
             instance = RtmpStream(it)
+            instance?.addEventListener(Event.RTMP_STATUS, this)
         }
         channel = EventChannel(
             plugin.flutterPluginBinding.binaryMessenger, "com.haishinkit.eventchannel/${hashCode()}"
