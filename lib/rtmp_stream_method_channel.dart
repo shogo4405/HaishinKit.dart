@@ -1,4 +1,3 @@
-import 'package:haishin_kit/av_capture_session_preset.dart';
 import 'package:haishin_kit/rtmp_stream_platform_interface.dart';
 
 import 'haishin_kit_method_channel.dart';
@@ -81,6 +80,18 @@ class MethodChannelRtmpStream extends RtmpStreamPlatform {
   Future<int?> registerTexture(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel
         .invokeMethod<int>("RtmpStream#registerTexture", params);
+  }
+
+  @override
+  Future<void> unregisterTexture(Map<String, dynamic> params) async {
+    return await MethodChannelHaishinKit.channel
+        .invokeMethod<void>("RtmpStream#unregisterTexture", params);
+  }
+
+  @override
+  Future<int?> updateTextureSize(Map<String, dynamic> params) async {
+    return await MethodChannelHaishinKit.channel
+        .invokeMethod<int>("RtmpStream#updateTextureSize", params);
   }
 
   @override

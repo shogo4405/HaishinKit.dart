@@ -49,6 +49,10 @@ abstract class NetStream {
   /// Stops playing or publishing and makes available other uses.
   Future<void> close();
 
+  Future<void> unregisterTexture(Map<String, dynamic> params);
+
+  Future<int?> updateTextureSize(Map<String, dynamic> params);
+
   /// Disposes the NetStream platform instance.
   Future<void> dispose();
 }

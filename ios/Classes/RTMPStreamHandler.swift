@@ -171,12 +171,34 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
                 }
                 result(texture.id)
             } else {
-                if let texture = instance?.mixer.drawable as? NetStreamDrawableTexture {
+                let texture = instance?.mixer.drawable as! NetStreamDrawableTexture
+                result(texture.id)
+            }
+        case "RtmpStream#unregisterTexture":
+            guard
+                let registry = plugin.registrar?.textures() else {
+                result(nil)
+                return
+            }
+            if let textureId = arguments["id"] as? Int64 {
+                registry.unregisterTexture(textureId)
+            }
+            result(nil)
+        case "RtmpStream#updateTextureSize":
+            guard
+                let registry = plugin.registrar?.textures() else {
+                result(nil)
+                return
+            }
+
+            if let texture = instance?.mixer.drawable as? NetStreamDrawableTexture {
                     if let width = arguments["width"] as? NSNumber,
                        let height = arguments["height"] as? NSNumber {
                         texture.bounds = CGSize(width: width.doubleValue, height: height.doubleValue)
+                        print("NetStreamDrawableTexture.bounds")
                     }
-                }
+                result(texture.id)
+            } else {
                 result(nil)
             }
         case "RtmpStream#close":
