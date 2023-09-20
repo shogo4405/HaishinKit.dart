@@ -172,6 +172,17 @@ class RtmpStreamHandler(
                     result.success(texture.id)
                 } else {
                     val texture = (netStream.drawable as? NetStreamDrawableTexture)
+                    result.success(texture?.id)
+                }
+            }
+            "$TAG#unregisterTexture" -> {
+                result.success(null)
+            }
+
+            "$TAG#updateTextureSize" -> {
+                val netStream = instance
+                if (netStream?.drawable != null) {
+                    val texture = (netStream.drawable as? NetStreamDrawableTexture)
                     val width = call.argument<Double>("width") ?: 0
                     val height = call.argument<Double>("height") ?: 0
                     texture?.imageExtent = Size(width.toInt(), height.toInt())
@@ -179,6 +190,8 @@ class RtmpStreamHandler(
                         netStream.deviceOrientation = it
                     }
                     result.success(texture?.id)
+                } else {
+                    result.success(null)
                 }
             }
 

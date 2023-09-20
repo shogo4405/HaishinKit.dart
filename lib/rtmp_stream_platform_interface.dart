@@ -1,4 +1,3 @@
-import 'package:haishin_kit/av_capture_session_preset.dart';
 import 'package:haishin_kit/rtmp_stream_method_channel.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
@@ -81,6 +80,14 @@ abstract class RtmpStreamPlatform extends PlatformInterface {
   /// Register a texture with FlutterTexture.
   Future<int?> registerTexture(Map<String, dynamic> params) async {
     throw UnimplementedError('registerTexture() has not been implemented.');
+  }
+
+  Future<void> unregisterTexture(Map<String, dynamic> params) async {
+    throw UnimplementedError('unregisterTexture() has not been implemented.');
+  }
+
+  Future<int?> updateTextureSize(Map<String, dynamic> params) async {
+    throw UnimplementedError('updateTextureSize() has not been implemented.');
   }
 
   /// Closes the connection.

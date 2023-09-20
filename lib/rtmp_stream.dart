@@ -136,6 +136,20 @@ class RtmpStream extends NetStream {
   }
 
   @override
+  Future<void> unregisterTexture(Map<String, dynamic> params) async {
+    assert(_memory != null);
+    params["memory"] = _memory;
+    return RtmpStreamPlatform.instance.unregisterTexture(params);
+  }
+
+  @override
+  Future<int?> updateTextureSize(Map<String, dynamic> params) async {
+    assert(_memory != null);
+    params["memory"] = _memory;
+    return RtmpStreamPlatform.instance.updateTextureSize(params);
+  }
+
+  @override
   Future<void> close() async {
     assert(_memory != null);
     RtmpStreamPlatform.instance.close({"memory": _memory});
