@@ -9,6 +9,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
     private var instance: RTMPStream?
     private var eventChannel: FlutterEventChannel?
     private var eventSink: FlutterEventSink?
+    private var textureId: Int64?
 
     init(plugin: SwiftHaishinKitPlugin, handler: RTMPConnectionHandler) {
         self.plugin = plugin
@@ -20,6 +21,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
         } else {
             self.eventChannel = nil
         }
+        
         if let connection = handler.instance {
             let instance = RTMPStream(connection: connection)
             instance.addEventListener(.rtmpStatus, selector: #selector(RTMPStreamHandler.handler), observer: self)
@@ -29,6 +31,10 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
             NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
             self.instance = instance
         }
+    }
+
+    deinit {
+        print("RTMPStreamHandler.deinit")
     }
 
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -164,15 +170,17 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
                 result(nil)
                 return
             }
-            if instance?.mixer.drawable == nil {
+            if instance?.mixer.drawable == nil && self.textureId == nil   {
                 let texture = NetStreamDrawableTexture(registry: registry)
                 if let instance = instance {
                     texture.attachStream(instance)
                 }
-                result(texture.id)
+                self.textureId = texture.id
+
+                result(self.textureId)
             } else {
-                let texture = instance?.mixer.drawable as! NetStreamDrawableTexture
-                result(texture.id)
+                
+                result(self.textureId)
             }
         case "RtmpStream#unregisterTexture":
             guard
@@ -195,7 +203,6 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
                     if let width = arguments["width"] as? NSNumber,
                        let height = arguments["height"] as? NSNumber {
                         texture.bounds = CGSize(width: width.doubleValue, height: height.doubleValue)
-                        print("NetStreamDrawableTexture.bounds")
                     }
                 result(texture.id)
             } else {

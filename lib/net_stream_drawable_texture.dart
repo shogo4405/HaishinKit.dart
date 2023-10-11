@@ -38,10 +38,9 @@ class _NetStreamDrawableState extends State<NetStreamDrawableTexture> {
   }
 
   Future<void> _updatePlatformState(MediaQueryData mediaQueryData) async {
-    widget.netStream?.registerTexture({
+    widget.netStream?.updateTextureSize({
       "width": mediaQueryData.size.width,
       "height": mediaQueryData.size.height,
-      "orientation": mediaQueryData.orientation.name
     });
   }
 }
