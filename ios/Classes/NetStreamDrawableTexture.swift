@@ -11,17 +11,19 @@ class NetStreamDrawableTexture: NSObject, FlutterTexture {
     ]
 
     var id: Int64 = 0
-    var orientation: AVCaptureVideoOrientation = .portrait
-    var position: AVCaptureDevice.Position = .back
-    var videoFormatDescription: CMVideoFormatDescription?
     var bounds: CGSize = .zero
     var videoGravity: AVLayerVideoGravity = .resizeAspectFill
     var videoOrientation: AVCaptureVideoOrientation = .portrait
+    var isCaptureVideoPreviewEnabled: Bool = false
     private var currentSampleBuffer: CMSampleBuffer?
     private let registry: FlutterTextureRegistry
     private let context = CIContext()
     private var queue = DispatchQueue(label: "com.haishinkit.NetStreamDrawableTexture")
-    private var currentStream: NetStream?
+    private weak var currentStream: NetStream? {
+        didSet {
+            currentStream?.drawable = self
+        }
+    }
 
     init(registry: FlutterTextureRegistry) {
         self.registry = registry
@@ -80,14 +82,12 @@ class NetStreamDrawableTexture: NSObject, FlutterTexture {
 extension NetStreamDrawableTexture: NetStreamDrawable {
     // MARK: - NetStreamDrawable
     func attachStream(_ stream: NetStream?) {
-        guard let stream = stream else {
-            self.currentStream = nil
-            return
-        }
-        stream.lockQueue.async {
-            stream.mixer.drawable = self
-            self.currentStream = stream
-            stream.mixer.startRunning()
+        if Thread.isMainThread {
+            currentStream = stream
+        } else {
+            DispatchQueue.main.async {
+                self.currentStream = stream
+            }
         }
     }
 

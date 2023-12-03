@@ -117,10 +117,10 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
                 return
             }
             if let bitrate = settings["bitrate"] as? NSNumber {
-                instance?.videoSettings.bitRate = bitrate.uint32Value
+                instance?.videoSettings.bitRate = bitrate.intValue
             }
             if let width = settings["width"] as? NSNumber, let height = settings["height"] as? NSNumber {
-                instance?.videoSettings.videoSize = .init(width: width.int32Value, height: height.int32Value)
+                instance?.videoSettings.videoSize = .init(width: .init(width.intValue), height: .init(height.intValue))
             }
             if let frameInterval = settings["frameInterval"] as? NSNumber {
                 instance?.videoSettings.maxKeyFrameIntervalDuration = frameInterval.int32Value
@@ -170,7 +170,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
                 result(nil)
                 return
             }
-            if instance?.mixer.drawable == nil && self.textureId == nil   {
+            if instance?.drawable == nil && self.textureId == nil   {
                 let texture = NetStreamDrawableTexture(registry: registry)
                 if let instance = instance {
                     texture.attachStream(instance)
@@ -198,8 +198,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
                 result(nil)
                 return
             }
-
-            if let texture = instance?.mixer.drawable as? NetStreamDrawableTexture {
+            if let texture = instance?.drawable as? NetStreamDrawableTexture {
                     if let width = arguments["width"] as? NSNumber,
                        let height = arguments["height"] as? NSNumber {
                         texture.bounds = CGSize(width: width.doubleValue, height: height.doubleValue)
