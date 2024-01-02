@@ -14,8 +14,9 @@ import 'package:haishin_kit_example/models/live_stream_state.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
-  const String server = "rtmp://192.168.68.52/live";
-  const streamKey = "SySD6EQb6";
+  const String server = "rtmp://192.168.1.3/live";
+  const streamKey = "live";
+
   runApp(
     const MaterialApp(
       home: Scaffold(
@@ -75,7 +76,7 @@ class _MyAppState extends State<MyApp> {
       switch (event["data"]["code"]) {
         case 'NetConnection.Connect.Success':
           if (_mode == "publish") {
-            _stream?.publish("SySD6EQb6");
+            _stream?.publish("live");
           } else {
             _stream?.play("live");
           }
@@ -151,7 +152,7 @@ class _MyAppState extends State<MyApp> {
                 _recording = false;
               });
             } else {
-              _connection?.connect("rtmp://192.168.68.52/live");
+              _connection?.connect("rtmp://192.168.1.3/live");
             }
           },
         ),
@@ -162,6 +163,7 @@ class _MyAppState extends State<MyApp> {
 
 class WidgetWrapper extends StatefulWidget {
   final Widget child;
+
   const WidgetWrapper({
     super.key,
     required this.child,
@@ -320,6 +322,7 @@ class Example2State extends State<Example2> {
 class LiveStreamPreview extends StatefulWidget {
   final LiveStreamTextureMixin textureManager;
   final LiveStreamState state;
+
   const LiveStreamPreview({
     super.key,
     required this.textureManager,
