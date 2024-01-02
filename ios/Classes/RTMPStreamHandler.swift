@@ -140,7 +140,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
         case "RtmpStream#attachVideo":
             let source = arguments["source"] as? [String: Any?]
             if source == nil {
-                instance?.attachCamera(nil)
+                instance?.attachCamera(nil, channel: 0)
             } else {
                 var devicePosition = AVCaptureDevice.Position.back
                 if let position = source?["position"] as? String {
@@ -154,7 +154,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
                     }
                 }
                 if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: devicePosition) {
-                    instance?.attachCamera(device)
+                    instance?.attachCamera(device, channel: 0)
                 }
             }
             result(nil)
@@ -194,7 +194,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
             result(nil)
         case "RtmpStream#updateTextureSize":
             guard
-                let registry = plugin.registrar?.textures() else {
+                (plugin.registrar?.textures()) != nil else {
                 result(nil)
                 return
             }

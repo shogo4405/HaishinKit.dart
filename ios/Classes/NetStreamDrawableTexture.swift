@@ -19,7 +19,7 @@ class NetStreamDrawableTexture: NSObject, FlutterTexture {
     private let registry: FlutterTextureRegistry
     private let context = CIContext()
     private var queue = DispatchQueue(label: "com.haishinkit.NetStreamDrawableTexture")
-    private weak var currentStream: NetStream? {
+    private weak var currentStream: IOStream? {
         didSet {
             currentStream?.drawable = self
         }
@@ -79,9 +79,9 @@ class NetStreamDrawableTexture: NSObject, FlutterTexture {
     }
 }
 
-extension NetStreamDrawableTexture: NetStreamDrawable {
+extension NetStreamDrawableTexture: IOStreamDrawable {
     // MARK: - NetStreamDrawable
-    func attachStream(_ stream: NetStream?) {
+    func attachStream(_ stream: IOStream?) {
         if Thread.isMainThread {
             currentStream = stream
         } else {
