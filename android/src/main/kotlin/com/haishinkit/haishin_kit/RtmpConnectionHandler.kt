@@ -1,7 +1,5 @@
 package com.haishinkit.haishin_kit
 
-import android.os.Handler
-import android.os.Looper
 import com.haishinkit.event.Event
 import com.haishinkit.event.IEventListener
 import com.haishinkit.rtmp.RtmpConnection
@@ -10,9 +8,9 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
 class RtmpConnectionHandler(
-    private val plugin: HaishinKitPlugin
+        private val plugin: HaishinKitPlugin
 ) : MethodChannel.MethodCallHandler, IEventListener,
-    EventChannel.StreamHandler {
+        EventChannel.StreamHandler {
     companion object {
         private const val TAG = "RtmpConnection"
     }
@@ -26,8 +24,8 @@ class RtmpConnectionHandler(
     init {
         instance?.addEventListener(Event.RTMP_STATUS, this)
         channel = EventChannel(
-            plugin.flutterPluginBinding.binaryMessenger,
-            "com.haishinkit.eventchannel/${hashCode()}"
+                plugin.flutterPluginBinding.binaryMessenger,
+                "com.haishinkit.eventchannel/${hashCode()}"
         )
         channel.setStreamHandler(this)
     }
@@ -39,10 +37,12 @@ class RtmpConnectionHandler(
                 instance?.connect(command)
                 result.success(null)
             }
+
             "$TAG#close" -> {
                 instance?.close()
                 result.success(null)
             }
+
             "$TAG#dispose" -> {
                 eventSink?.endOfStream()
                 instance?.dispose()

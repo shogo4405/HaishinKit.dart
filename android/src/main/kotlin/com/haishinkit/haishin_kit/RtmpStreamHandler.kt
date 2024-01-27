@@ -1,6 +1,7 @@
 package com.haishinkit.haishin_kit
 
 import android.content.Context
+import android.graphics.Point
 import android.hardware.camera2.CameraCharacteristics
 import android.media.MediaFormat.KEY_LEVEL
 import android.media.MediaFormat.KEY_PROFILE
@@ -14,13 +15,13 @@ import com.haishinkit.haishinkit.ProfileLevel
 import com.haishinkit.media.AudioRecordSource
 import com.haishinkit.media.Camera2Source
 import com.haishinkit.rtmp.RtmpStream
+import com.haishinkit.util.Rectangle
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import java.lang.Exception
 
 class RtmpStreamHandler(
-    private val plugin: HaishinKitPlugin, handler: RtmpConnectionHandler?
+        private val plugin: HaishinKitPlugin, handler: RtmpConnectionHandler?
 ) : MethodChannel.MethodCallHandler, IEventListener, EventChannel.StreamHandler {
     companion object {
         private const val TAG = "RtmpStream"
@@ -41,11 +42,12 @@ class RtmpStreamHandler(
 
     init {
         handler?.instance?.let {
-            instance = RtmpStream(it)
+            instance = RtmpStream(plugin.flutterPluginBinding.applicationContext, it)
+            instance?.screen?.frame = Rectangle(Point(0, 0), Size(1024, 576))
             instance?.addEventListener(Event.RTMP_STATUS, this)
         }
         channel = EventChannel(
-            plugin.flutterPluginBinding.binaryMessenger, "com.haishinkit.eventchannel/${hashCode()}"
+                plugin.flutterPluginBinding.binaryMessenger, "com.haishinkit.eventchannel/${hashCode()}"
         )
         channel.setStreamHandler(this)
     }
@@ -110,7 +112,7 @@ class RtmpStreamHandler(
                 (source["profileLevel"] as? String)?.let {
                     try {
                         val profileLevel = ProfileLevel.valueOf(it)
-                        var options = mutableListOf<CodecOption>()
+                        val options = mutableListOf<CodecOption>()
                         options.add(CodecOption(KEY_PROFILE, profileLevel.profile))
                         options.add(CodecOption(KEY_LEVEL, profileLevel.level))
                         instance?.videoSetting?.options = options
@@ -164,17 +166,18 @@ class RtmpStreamHandler(
             "$TAG#registerTexture" -> {
                 val netStream = instance
                 if (netStream?.drawable == null) {
-                    val texture = NetStreamDrawableTexture(plugin.flutterPluginBinding)
+                    val texture = StreamDrawableTexture(plugin.flutterPluginBinding)
                     texture.attachStream(netStream)
                     if (camera?.stream != null) {
                         camera?.open()
                     }
                     result.success(texture.id)
                 } else {
-                    val texture = (netStream.drawable as? NetStreamDrawableTexture)
+                    val texture = (netStream.drawable as? StreamDrawableTexture)
                     result.success(texture?.id)
                 }
             }
+
             "$TAG#unregisterTexture" -> {
                 result.success(null)
             }
@@ -182,12 +185,12 @@ class RtmpStreamHandler(
             "$TAG#updateTextureSize" -> {
                 val netStream = instance
                 if (netStream?.drawable != null) {
-                    val texture = (netStream.drawable as? NetStreamDrawableTexture)
+                    val texture = (netStream.drawable as? StreamDrawableTexture)
                     val width = call.argument<Double>("width") ?: 0
                     val height = call.argument<Double>("height") ?: 0
                     texture?.imageExtent = Size(width.toInt(), height.toInt())
                     (plugin.flutterPluginBinding.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.defaultDisplay?.orientation?.let {
-                        netStream.deviceOrientation = it
+                        netStream.videoSource?.screen?.deviceOrientation = it
                     }
                     result.success(texture?.id)
                 } else {

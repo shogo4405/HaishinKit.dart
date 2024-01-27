@@ -47,5 +47,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.shogo4405.HaishinKit~kt:haishinkit:0.12.0'
+    implementation 'com.github.shogo4405.HaishinKit~kt:haishinkit:0.13.0'
 }
