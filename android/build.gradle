@@ -1,8 +1,5 @@
-group 'com.haishinkit.haishin_kit'
-version '0.12.0'
-
 buildscript {
-    ext.kotlin_version = '1.8.0'
+    ext.kotlin_version = '1.9.22'
 
     repositories {
         google()
@@ -10,7 +7,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.0'
+        classpath 'com.android.tools.build:gradle:8.1.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -27,15 +24,17 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 33
+    namespace 'com.haishinkit.haishin_kit'
+
+    compileSdkVersion 34
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     sourceSets {
@@ -48,5 +47,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.shogo4405.HaishinKit~kt:haishinkit:0.11.2'
+    implementation 'com.github.shogo4405.HaishinKit~kt:haishinkit:0.12.0'
 }
