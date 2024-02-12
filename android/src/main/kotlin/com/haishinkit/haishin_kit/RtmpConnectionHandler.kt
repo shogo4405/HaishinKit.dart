@@ -8,9 +8,9 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
 class RtmpConnectionHandler(
-        private val plugin: HaishinKitPlugin
+    private val plugin: HaishinKitPlugin
 ) : MethodChannel.MethodCallHandler, IEventListener,
-        EventChannel.StreamHandler {
+    EventChannel.StreamHandler {
     companion object {
         private const val TAG = "RtmpConnection"
     }
@@ -24,8 +24,8 @@ class RtmpConnectionHandler(
     init {
         instance?.addEventListener(Event.RTMP_STATUS, this)
         channel = EventChannel(
-                plugin.flutterPluginBinding.binaryMessenger,
-                "com.haishinkit.eventchannel/${hashCode()}"
+            plugin.flutterPluginBinding.binaryMessenger,
+            "com.haishinkit.eventchannel/${hashCode()}"
         )
         channel.setStreamHandler(this)
     }

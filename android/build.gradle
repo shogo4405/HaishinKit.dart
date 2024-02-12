@@ -7,7 +7,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.0'
+        classpath 'com.android.tools.build:gradle:8.1.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android'
 android {
     namespace 'com.haishinkit.haishin_kit'
 
-    compileSdkVersion 34
+    compileSdk 34
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -47,5 +47,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.github.shogo4405.HaishinKit~kt:haishinkit:0.13.0'
+    implementation 'com.github.shogo4405.HaishinKit~kt:haishinkit:0.13.1'
 }

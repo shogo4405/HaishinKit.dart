@@ -11,7 +11,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.view.TextureRegistry
 
 class StreamDrawableTexture(binding: FlutterPlugin.FlutterPluginBinding) :
-        StreamDrawable {
+    StreamDrawable {
     override var videoGravity: VideoGravity
         get() = pixelTransform.videoGravity
         set(value) {

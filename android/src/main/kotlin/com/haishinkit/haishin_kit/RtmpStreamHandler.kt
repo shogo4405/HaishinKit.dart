@@ -1,7 +1,7 @@
 package com.haishinkit.haishin_kit
 
 import android.content.Context
-import android.graphics.Point
+import android.graphics.Rect
 import android.hardware.camera2.CameraCharacteristics
 import android.media.MediaFormat.KEY_LEVEL
 import android.media.MediaFormat.KEY_PROFILE
@@ -15,13 +15,12 @@ import com.haishinkit.haishinkit.ProfileLevel
 import com.haishinkit.media.AudioRecordSource
 import com.haishinkit.media.Camera2Source
 import com.haishinkit.rtmp.RtmpStream
-import com.haishinkit.util.Rectangle
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
 class RtmpStreamHandler(
-        private val plugin: HaishinKitPlugin, handler: RtmpConnectionHandler?
+    private val plugin: HaishinKitPlugin, handler: RtmpConnectionHandler?
 ) : MethodChannel.MethodCallHandler, IEventListener, EventChannel.StreamHandler {
     companion object {
         private const val TAG = "RtmpStream"
@@ -43,11 +42,11 @@ class RtmpStreamHandler(
     init {
         handler?.instance?.let {
             instance = RtmpStream(plugin.flutterPluginBinding.applicationContext, it)
-            instance?.screen?.frame = Rectangle(Point(0, 0), Size(1024, 576))
+            instance?.screen?.frame = Rect(0, 0, 1280, 720)
             instance?.addEventListener(Event.RTMP_STATUS, this)
         }
         channel = EventChannel(
-                plugin.flutterPluginBinding.binaryMessenger, "com.haishinkit.eventchannel/${hashCode()}"
+            plugin.flutterPluginBinding.binaryMessenger, "com.haishinkit.eventchannel/${hashCode()}"
         )
         channel.setStreamHandler(this)
     }
