@@ -1,5 +1,6 @@
 import 'package:haishin_kit/audio_source.dart';
 import 'package:haishin_kit/av_capture_session_preset.dart';
+import 'package:haishin_kit/screen_settings.dart';
 import 'package:haishin_kit/video_settings.dart';
 import 'package:haishin_kit/video_source.dart';
 
@@ -19,11 +20,14 @@ abstract class NetStream {
   /// Specifies the sessionPreset for iOS.
   set sessionPreset(AVCaptureSessionPreset value);
 
-  /// Specifies the video compression properties.
+  /// Specifies the video codec properties.
   set videoSettings(VideoSettings videoSettings);
 
-  /// Specifies the audio compression properties.
+  /// Specifies the audio codec properties.
   set audioSettings(AudioSettings audioSettings);
+
+  /// Specifies the screen properties.
+  set screenSettings(ScreenSettings screenSettings);
 
   /// Gets the hasAudio property.
   Future<bool?> getHasAudio();

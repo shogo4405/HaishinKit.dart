@@ -13,5 +13,6 @@ enum AVCaptureSessionPreset {
   ;
 
   const AVCaptureSessionPreset(this.presetName);
+
   final String presetName;
 }

@@ -122,6 +122,19 @@ class RtmpStreamHandler(
                 result.success(null)
             }
 
+            "$TAG#setScreenSettings" -> {
+                val source = call.argument<Map<String, Any?>>("settings") ?: return
+                val frame = Rect(0, 0, 0, 0)
+                (source["width"] as? Int)?.let {
+                    frame.set(0, 0, it, 0)
+                }
+                (source["height"] as? Int)?.let {
+                    frame.set(0, 0, frame.width(), it)
+                }
+                instance?.screen?.frame = frame
+                result.success(null)
+            }
+
             "$TAG#attachAudio" -> {
                 val source = call.argument<Map<String, Any?>>("source")
                 if (source == null) {

@@ -47,14 +47,19 @@ abstract class RtmpStreamPlatform extends PlatformInterface {
     throw UnimplementedError('setSessionPreset has not been implemented.');
   }
 
-  /// Sets the audio decoding properties.
+  /// Sets the audio codec settings.
   Future<void> setAudioSettings(Map<String, dynamic> params) {
     throw UnimplementedError('setAudioSettings() has not been implemented.');
   }
 
-  /// Sets the sessionPreset for the AVCaptureSession.
+  /// Sets the video codec properties.
   Future<void> setVideoSettings(Map<String, dynamic> params) {
     throw UnimplementedError('setVideoSettings() has not been implemented.');
+  }
+
+  /// Sets the screen properties.
+  Future<void> setScreenSettings(Map<String, dynamic> params) {
+    throw UnimplementedError('setScreenSettings() has not been implemented.');
   }
 
   /// Attaches an audio source.
@@ -82,6 +87,7 @@ abstract class RtmpStreamPlatform extends PlatformInterface {
     throw UnimplementedError('registerTexture() has not been implemented.');
   }
 
+  /// Unregister a texture with FlutterTexture.
   Future<void> unregisterTexture(Map<String, dynamic> params) async {
     throw UnimplementedError('unregisterTexture() has not been implemented.');
   }

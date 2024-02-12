@@ -5,6 +5,7 @@ import 'package:haishin_kit/haishin_kit_platform_interface.dart';
 import 'package:haishin_kit/net_stream.dart';
 import 'package:haishin_kit/rtmp_connection.dart';
 import 'package:haishin_kit/rtmp_stream_platform_interface.dart';
+import 'package:haishin_kit/screen_settings.dart';
 import 'package:haishin_kit/video_settings.dart';
 import 'package:haishin_kit/video_source.dart';
 
@@ -27,6 +28,7 @@ class RtmpStream extends NetStream {
   AVCaptureSessionPreset _sessionPreset = AVCaptureSessionPreset.hd1280x720;
   VideoSettings _videoSettings = VideoSettings();
   AudioSettings _audioSettings = AudioSettings();
+  ScreenSettings _screenSettings = ScreenSettings();
 
   RtmpStream._();
 
@@ -74,6 +76,16 @@ class RtmpStream extends NetStream {
     _audioSettings = audioSettings;
     RtmpStreamPlatform.instance.setAudioSettings(
         {"memory": _memory, "settings": audioSettings.toMap()});
+  }
+
+  ScreenSettings get screenSettings => _screenSettings;
+
+  @override
+  set screenSettings(ScreenSettings screenSettings) {
+    assert(_memory != null);
+    _screenSettings = screenSettings;
+    RtmpStreamPlatform.instance.setScreenSettings(
+        {"memory": _memory, "settings": screenSettings.toMap()});
   }
 
   @override

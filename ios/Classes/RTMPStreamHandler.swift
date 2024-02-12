@@ -129,6 +129,8 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
                 instance?.videoSettings.profileLevel = ProfileLevel(rawValue: profileLevel)?.kVTProfileLevel ?? ProfileLevel.H264_Baseline_AutoLevel.kVTProfileLevel
             }
             result(nil)
+        case "RtmpStream#setScreenSettings":
+            result(nil)
         case "RtmpStream#attachAudio":
             let source = arguments["source"] as? [String: Any?]
             if source == nil {
