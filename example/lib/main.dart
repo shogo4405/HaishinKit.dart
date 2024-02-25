@@ -4,9 +4,9 @@ import 'package:audio_session/audio_session.dart';
 import 'package:flutter/material.dart';
 import 'package:haishin_kit/audio_settings.dart';
 import 'package:haishin_kit/audio_source.dart';
-import 'package:haishin_kit/net_stream_drawable_texture.dart';
 import 'package:haishin_kit/rtmp_connection.dart';
 import 'package:haishin_kit/rtmp_stream.dart';
+import 'package:haishin_kit/stream_view_texture.dart';
 import 'package:haishin_kit/video_settings.dart';
 import 'package:haishin_kit/video_source.dart';
 import 'package:haishin_kit_example/camera_live_controller.dart';
@@ -137,9 +137,7 @@ class _MyAppState extends State<MyApp> {
           )
         ]),
         body: Center(
-          child: _stream == null
-              ? const Text("")
-              : NetStreamDrawableTexture(_stream),
+          child: _stream == null ? const Text("") : StreamViewTexture(_stream),
         ),
         floatingActionButton: FloatingActionButton(
           child: _recording

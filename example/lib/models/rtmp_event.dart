@@ -121,7 +121,6 @@ enum RtmpStreamCode {
   stepNotify("NetStream.Step.Notify", EventLevel.status),
   unpauseNotify("NetStream.Unpause.Notify", EventLevel.status),
   unpublishSuccess("NetStream.Unpublish.Success", EventLevel.status),
-
   videoDimensionChange("NetStream.Video.DimensionChange", EventLevel.status);
 
   final String value;

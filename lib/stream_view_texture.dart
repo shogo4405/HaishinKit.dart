@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:haishin_kit/net_stream.dart';
+import 'package:haishin_kit/stream.dart';
 
-class NetStreamDrawableTexture extends StatefulWidget {
-  const NetStreamDrawableTexture(this.netStream, {Key? key}) : super(key: key);
+class StreamViewTexture extends StatefulWidget {
+  const StreamViewTexture(this.netStream, {super.key});
 
-  final NetStream? netStream;
+  final Stream? netStream;
 
   @override
-  State<StatefulWidget> createState() => _NetStreamDrawableState();
+  State<StatefulWidget> createState() => _StreamViewTextureState();
 }
 
-class _NetStreamDrawableState extends State<NetStreamDrawableTexture> {
+class _StreamViewTextureState extends State<StreamViewTexture> {
   int? _textureId;
 
   @override

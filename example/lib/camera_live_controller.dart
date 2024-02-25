@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:audio_session/audio_session.dart';
 import 'package:flutter/foundation.dart';
 import 'package:haishin_kit/audio_settings.dart';
 import 'package:haishin_kit/audio_source.dart';
@@ -9,8 +10,6 @@ import 'package:haishin_kit/rtmp_connection.dart';
 import 'package:haishin_kit/rtmp_stream.dart';
 import 'package:haishin_kit/video_settings.dart';
 import 'package:haishin_kit/video_source.dart';
-
-import 'package:audio_session/audio_session.dart';
 
 import 'models/live_stream_state.dart';
 import 'models/rtmp_event.dart';
@@ -191,10 +190,13 @@ mixin LiveStreamNotifier {
       StreamController<RtmpEvent>.broadcast();
 
   Stream<LiveStreamState> get stateStream => _stateController.stream;
+
   Stream<RtmpEvent> get eventStream => _eventController.stream;
 
   LiveStreamState _state = const LiveStreamState();
+
   LiveStreamState get state => _state;
+
   LiveStreamStatus get status => _state.status;
 
   void dispose() {
@@ -352,6 +354,7 @@ mixin LiveStreamTextureMixin on LiveStreamConnectionManager {
   int? get textureId => _textureId;
 
   bool _textureRegistered = false;
+
   bool get textureRegistered => _textureRegistered;
 
   Future<int?> registerTexture() async {
@@ -361,7 +364,6 @@ mixin LiveStreamTextureMixin on LiveStreamConnectionManager {
 
     try {
       _textureId ??= await _stream!.registerTexture({});
-
       if (_textureId != null) {
         _textureRegistered = true;
       }
@@ -400,6 +402,7 @@ mixin LiveStreamTextureMixin on LiveStreamConnectionManager {
         _previousSize = size;
       }
     }
+
     return _previousSize == size;
   }
 

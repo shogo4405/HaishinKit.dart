@@ -6,6 +6,7 @@ import android.hardware.camera2.CameraCharacteristics
 import android.media.MediaFormat.KEY_LEVEL
 import android.media.MediaFormat.KEY_PROFILE
 import android.os.Handler
+import android.util.Log
 import android.util.Size
 import android.view.WindowManager
 import com.haishinkit.codec.CodecOption
@@ -22,8 +23,8 @@ import io.flutter.plugin.common.MethodChannel
 class RtmpStreamHandler(
     private val plugin: HaishinKitPlugin, handler: RtmpConnectionHandler?
 ) : MethodChannel.MethodCallHandler, IEventListener, EventChannel.StreamHandler {
-    companion object {
-        private const val TAG = "RtmpStream"
+    private companion object {
+        const val TAG = "RtmpStream"
     }
 
     private var instance: RtmpStream? = null
@@ -122,11 +123,11 @@ class RtmpStreamHandler(
                 result.success(null)
             }
 
-            "$TAG#setScreenSettings" -> {
+            "$TAG#setScreenSettigns" -> {
                 val source = call.argument<Map<String, Any?>>("settings") ?: return
                 val frame = Rect(0, 0, 0, 0)
                 (source["width"] as? Int)?.let {
-                    frame.set(0, 0, it, 0)
+                    frame.set(0, 0, it, frame.height())
                 }
                 (source["height"] as? Int)?.let {
                     frame.set(0, 0, frame.width(), it)
@@ -167,7 +168,7 @@ class RtmpStreamHandler(
                     }
                     val handler = Handler()
                     handler.postDelayed({
-                        if (instance?.drawable != null) {
+                        if (instance?.view != null) {
                             camera?.open(facing)
                         }
                     }, 750)
@@ -177,15 +178,15 @@ class RtmpStreamHandler(
 
             "$TAG#registerTexture" -> {
                 val netStream = instance
-                if (netStream?.drawable == null) {
-                    val texture = StreamDrawableTexture(plugin.flutterPluginBinding)
+                if (netStream?.view == null) {
+                    val texture = StreamViewTexture(plugin.flutterPluginBinding)
                     texture.attachStream(netStream)
                     if (camera?.stream != null) {
                         camera?.open()
                     }
                     result.success(texture.id)
                 } else {
-                    val texture = (netStream.drawable as? StreamDrawableTexture)
+                    val texture = (netStream.view as? StreamViewTexture)
                     result.success(texture?.id)
                 }
             }
@@ -196,13 +197,13 @@ class RtmpStreamHandler(
 
             "$TAG#updateTextureSize" -> {
                 val netStream = instance
-                if (netStream?.drawable != null) {
-                    val texture = (netStream.drawable as? StreamDrawableTexture)
+                if (netStream?.view != null) {
+                    val texture = (netStream.view as? StreamViewTexture)
                     val width = call.argument<Double>("width") ?: 0
                     val height = call.argument<Double>("height") ?: 0
                     texture?.imageExtent = Size(width.toInt(), height.toInt())
                     (plugin.flutterPluginBinding.applicationContext.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.defaultDisplay?.orientation?.let {
-                        netStream.videoSource?.screen?.deviceOrientation = it
+                        camera?.video?.deviceOrientation = it
                     }
                     result.success(texture?.id)
                 } else {

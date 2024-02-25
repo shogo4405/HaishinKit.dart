@@ -6,8 +6,8 @@ import 'package:haishin_kit/video_source.dart';
 
 import 'audio_settings.dart';
 
-/// The NetStream class is the foundation of a RTMPStream.
-abstract class NetStream {
+/// The Stream class is the foundation of a RTMPStream.
+abstract class Stream {
   /// The memory address.
   int? get memory;
 

@@ -6,12 +6,12 @@ import com.haishinkit.graphics.PixelTransform
 import com.haishinkit.graphics.VideoGravity
 import com.haishinkit.graphics.effect.VideoEffect
 import com.haishinkit.media.Stream
-import com.haishinkit.media.StreamDrawable
+import com.haishinkit.media.StreamView
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.view.TextureRegistry
 
-class StreamDrawableTexture(binding: FlutterPlugin.FlutterPluginBinding) :
-    StreamDrawable {
+class StreamViewTexture(binding: FlutterPlugin.FlutterPluginBinding) :
+    StreamView {
     override var videoGravity: VideoGravity
         get() = pixelTransform.videoGravity
         set(value) {
@@ -46,9 +46,9 @@ class StreamDrawableTexture(binding: FlutterPlugin.FlutterPluginBinding) :
 
     private var stream: Stream? = null
         set(value) {
-            field?.drawable = null
+            field?.view = null
             field = value
-            field?.drawable = this
+            field?.view = this
             pixelTransform.screen = value?.screen
         }
 

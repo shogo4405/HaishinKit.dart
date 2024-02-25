@@ -53,6 +53,12 @@ class MethodChannelRtmpStream extends RtmpStreamPlatform {
   }
 
   @override
+  Future<void> setScreenSettings(Map<String, dynamic> params) async {
+    return await MethodChannelHaishinKit.channel
+        .invokeMethod<void>("RtmpStream#setScreenSettigns", params);
+  }
+
+  @override
   Future<void> attachAudio(Map<String, dynamic> params) async {
     return await MethodChannelHaishinKit.channel
         .invokeMethod<void>("RtmpStream#attachAudio", params);

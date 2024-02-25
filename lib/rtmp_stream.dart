@@ -2,16 +2,16 @@ import 'package:flutter/services.dart';
 import 'package:haishin_kit/audio_source.dart';
 import 'package:haishin_kit/av_capture_session_preset.dart';
 import 'package:haishin_kit/haishin_kit_platform_interface.dart';
-import 'package:haishin_kit/net_stream.dart';
 import 'package:haishin_kit/rtmp_connection.dart';
 import 'package:haishin_kit/rtmp_stream_platform_interface.dart';
 import 'package:haishin_kit/screen_settings.dart';
+import 'package:haishin_kit/stream.dart';
 import 'package:haishin_kit/video_settings.dart';
 import 'package:haishin_kit/video_source.dart';
 
 import 'audio_settings.dart';
 
-class RtmpStream extends NetStream {
+class RtmpStream extends Stream {
   static Future<RtmpStream> create(RtmpConnection connection) async {
     var object = RtmpStream._();
     object._memory =

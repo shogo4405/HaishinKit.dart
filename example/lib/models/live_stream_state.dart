@@ -21,6 +21,7 @@ enum LiveStreamStatus {
   disconnected(5);
 
   final int value;
+
   const LiveStreamStatus(this.value);
 }
 
