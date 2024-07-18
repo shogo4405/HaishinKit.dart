@@ -3,7 +3,7 @@ import Foundation
 import HaishinKit
 import AVFoundation
 
-class NetStreamDrawableTexture: NSObject, FlutterTexture {
+class IOStreamDrawableTexture: NSObject, FlutterTexture {
     static let defaultOptions: [String: Any] = [
         kCVPixelBufferCGImageCompatibilityKey as String: true,
         kCVPixelBufferCGBitmapContextCompatibilityKey as String: true,
@@ -21,7 +21,7 @@ class NetStreamDrawableTexture: NSObject, FlutterTexture {
     private var queue = DispatchQueue(label: "com.haishinkit.NetStreamDrawableTexture")
     private weak var currentStream: IOStream? {
         didSet {
-            currentStream?.drawable = self
+            currentStream?.view = self
         }
     }
 
@@ -79,7 +79,7 @@ class NetStreamDrawableTexture: NSObject, FlutterTexture {
     }
 }
 
-extension NetStreamDrawableTexture: IOStreamDrawable {
+extension IOStreamDrawableTexture: IOStreamView {
     // MARK: - NetStreamDrawable
     func attachStream(_ stream: IOStream?) {
         if Thread.isMainThread {

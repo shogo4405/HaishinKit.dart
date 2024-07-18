@@ -21,7 +21,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
         } else {
             self.eventChannel = nil
         }
-        
+
         if let connection = handler.instance {
             let instance = RTMPStream(connection: connection)
             instance.addEventListener(.rtmpStatus, selector: #selector(RTMPStreamHandler.handler), observer: self)
@@ -33,10 +33,6 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
         }
     }
 
-    deinit {
-        print("RTMPStreamHandler.deinit")
-    }
-
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard
             let arguments = call.arguments as? [String: Any?] else {
@@ -45,22 +41,30 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
         }
         switch call.method {
         case "RtmpStream#getHasAudio":
-            result(instance?.hasAudio)
+            if let instance {
+                result(!instance.audioMixerSettings.isMuted)
+            } else {
+                result(nil)
+            }
         case "RtmpStream#setHasAudio":
             guard let hasAudio = arguments["value"] as? Bool else {
                 result(nil)
                 return
             }
-            instance?.hasAudio = hasAudio
+            instance?.audioMixerSettings.isMuted = !hasAudio
             result(nil)
         case "RtmpStream#getHasVudio":
-            result(instance?.hasVideo)
+            if let instance {
+                result(!instance.videoMixerSettings.isMuted)
+            } else {
+                result(nil)
+            }
         case "RtmpStream#setHasVudio":
             guard let hasVideo = arguments["value"] as? Bool else {
                 result(nil)
                 return
             }
-            instance?.hasVideo = hasVideo
+            instance?.videoMixerSettings.isMuted = !hasVideo
             result(nil)
         case "RtmpStream#setFrameRate":
             guard
@@ -142,7 +146,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
         case "RtmpStream#attachVideo":
             let source = arguments["source"] as? [String: Any?]
             if source == nil {
-                instance?.attachCamera(nil, channel: 0)
+                instance?.attachCamera(nil, track: 0)
             } else {
                 var devicePosition = AVCaptureDevice.Position.back
                 if let position = source?["position"] as? String {
@@ -156,7 +160,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
                     }
                 }
                 if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: devicePosition) {
-                    instance?.attachCamera(device, channel: 0)
+                    instance?.attachCamera(device, track: 0)
                 }
             }
             result(nil)
@@ -172,8 +176,8 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
                 result(nil)
                 return
             }
-            if instance?.drawable == nil && self.textureId == nil   {
-                let texture = NetStreamDrawableTexture(registry: registry)
+            if instance?.view == nil && self.textureId == nil {
+                let texture = IOStreamDrawableTexture(registry: registry)
                 if let instance = instance {
                     texture.attachStream(instance)
                 }
@@ -181,7 +185,7 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
 
                 result(self.textureId)
             } else {
-                
+
                 result(self.textureId)
             }
         case "RtmpStream#unregisterTexture":
@@ -200,11 +204,11 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
                 result(nil)
                 return
             }
-            if let texture = instance?.drawable as? NetStreamDrawableTexture {
-                    if let width = arguments["width"] as? NSNumber,
-                       let height = arguments["height"] as? NSNumber {
-                        texture.bounds = CGSize(width: width.doubleValue, height: height.doubleValue)
-                    }
+            if let texture = instance?.view as? IOStreamDrawableTexture {
+                if let width = arguments["width"] as? NSNumber,
+                   let height = arguments["height"] as? NSNumber {
+                    texture.bounds = CGSize(width: width.doubleValue, height: height.doubleValue)
+                }
                 result(texture.id)
             } else {
                 result(nil)

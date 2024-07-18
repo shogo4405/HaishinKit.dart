@@ -2,13 +2,13 @@ PODS:
   - audio_session (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - haishin_kit (0.12.0):
+  - haishin_kit (0.13.0):
     - Flutter
-    - HaishinKit (= 1.7.3)
-  - HaishinKit (1.7.3):
-    - Logboard (~> 2.4.1)
-  - Logboard (2.4.1)
-  - permission_handler_apple (9.1.1):
+    - HaishinKit (= 1.9.1)
+  - HaishinKit (1.9.1):
+    - Logboard (~> 2.5.0)
+  - Logboard (2.5.0)
+  - permission_handler_apple (9.3.0):
     - Flutter
 
 DEPENDENCIES:
@@ -33,13 +33,13 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
 
 SPEC CHECKSUMS:
-  audio_session: 4f3e461722055d21515cf3261b64c973c062f345
+  audio_session: 2624df5d96be4fb169b372058e5bdc9dec1308b2
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  haishin_kit: 78778a018aeb3994a8e2e4dcda47b7dee2bbeb41
-  HaishinKit: 326e27c4d06427ba53bffc68e516a92033293051
-  Logboard: b78984e3f9fa5075d5bfd9308d51b453992aad0e
-  permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
+  haishin_kit: 1c6fc62a3cfd14c2e428eec0f286fd916ac271c0
+  HaishinKit: b35b0dbaf35db5365ab6e1002963ec56ee36e8ff
+  Logboard: 4674a3d86681539a0ad1fca528d888b90871e268
+  permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
 
-PODFILE CHECKSUM: 24c72d9ee01e617bdfa511ca3a2c7ceb691edc60
+PODFILE CHECKSUM: f612daf28bb41c4908e091843a3e68226a9ef611
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.2
