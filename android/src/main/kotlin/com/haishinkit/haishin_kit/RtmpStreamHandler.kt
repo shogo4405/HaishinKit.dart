@@ -55,13 +55,13 @@ class RtmpStreamHandler(
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "$TAG#getHasAudio" -> {
-                result.success(instance?.audioSetting?.muted)
+                result.success(!instance?.audioSource?.isMuted!!)
             }
 
             "$TAG#setHasAudio" -> {
                 val value = call.argument<Boolean?>("value")
                 value?.let {
-                    instance?.audioSetting?.muted = !it
+                    instance?.audioSource?.isMuted = !it
                 }
                 result.success(null)
             }
