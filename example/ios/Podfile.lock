@@ -33,7 +33,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
 
 SPEC CHECKSUMS:
-  audio_session: 2624df5d96be4fb169b372058e5bdc9dec1308b2
+  audio_session: 088d2483ebd1dc43f51d253d4a1c517d9a2e7207
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   haishin_kit: 1c6fc62a3cfd14c2e428eec0f286fd916ac271c0
   HaishinKit: b35b0dbaf35db5365ab6e1002963ec56ee36e8ff

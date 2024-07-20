@@ -3,7 +3,7 @@ import Foundation
 import HaishinKit
 import AVFoundation
 
-class IOStreamDrawableTexture: NSObject, FlutterTexture {
+final class IOStreamDrawableTexture: NSObject, FlutterTexture {
     static let defaultOptions: [String: Any] = [
         kCVPixelBufferCGImageCompatibilityKey as String: true,
         kCVPixelBufferCGBitmapContextCompatibilityKey as String: true,

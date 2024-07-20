@@ -4,7 +4,7 @@ import HaishinKit
 import AVFoundation
 import VideoToolbox
 
-class RTMPStreamHandler: NSObject, MethodCallHandler {
+final class RTMPStreamHandler: NSObject, MethodCallHandler {
     private let plugin: SwiftHaishinKitPlugin
     private var instance: RTMPStream?
     private var eventChannel: FlutterEventChannel?
@@ -232,7 +232,9 @@ class RTMPStreamHandler: NSObject, MethodCallHandler {
         let event = Event.from(notification)
         var map: [String: Any?] = [:]
         map["type"] = event.type.rawValue
-        map["data"] = ASObjectUtil.removeEmpty(event.data)
+        if let data = event.data {
+            map["data"] = ASObjectUtil.removeEmpty(data)
+        }
         eventSink?(map)
     }
 

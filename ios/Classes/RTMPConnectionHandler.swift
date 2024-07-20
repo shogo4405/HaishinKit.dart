@@ -2,7 +2,7 @@ import Foundation
 import Flutter
 import HaishinKit
 
-class RTMPConnectionHandler: NSObject, MethodCallHandler {
+final class RTMPConnectionHandler: NSObject, MethodCallHandler {
     var instance: RTMPConnection?
     private let plugin: SwiftHaishinKitPlugin
     private var channel: FlutterEventChannel?
@@ -47,7 +47,9 @@ class RTMPConnectionHandler: NSObject, MethodCallHandler {
         let event = Event.from(notification)
         var map: [String: Any?] = [:]
         map["type"] = event.type.rawValue
-        map["data"] = ASObjectUtil.removeEmpty(event.data)
+        if let data = event.data {
+            map["data"] = ASObjectUtil.removeEmpty(data)
+        }
         eventSink?(map)
     }
 }
