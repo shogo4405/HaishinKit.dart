@@ -63,23 +63,23 @@ enum ProfileLevel: String {
         case .H264_Baseline_5_2:
             return kVTProfileLevel_H264_Baseline_5_2 as String
         case .H264_Baseline_AutoLevel:
-            return kVTProfileLevel_H264_Baseline_AutoLevel  as String
+            return kVTProfileLevel_H264_Baseline_AutoLevel as String
         case .H264_ConstrainedBaseline_AutoLevel:
             if #available(iOS 15.0, *) {
-                return kVTProfileLevel_H264_ConstrainedBaseline_AutoLevel  as String
+                return kVTProfileLevel_H264_ConstrainedBaseline_AutoLevel as String
             } else {
-                return kVTProfileLevel_H264_Baseline_AutoLevel  as String
+                return kVTProfileLevel_H264_Baseline_AutoLevel as String
             }
         case .H264_ConstrainedHigh_AutoLevel:
             if #available(iOS 15.0, *) {
-                return kVTProfileLevel_H264_ConstrainedHigh_AutoLevel  as String
+                return kVTProfileLevel_H264_ConstrainedHigh_AutoLevel as String
             } else {
-                return kVTProfileLevel_H264_High_AutoLevel  as String
+                return kVTProfileLevel_H264_High_AutoLevel as String
             }
         case .H264_Extended_5_0:
-            return kVTProfileLevel_H264_Extended_5_0  as String
+            return kVTProfileLevel_H264_Extended_5_0 as String
         case .H264_Extended_AutoLevel:
-            return kVTProfileLevel_H264_Extended_AutoLevel  as String
+            return kVTProfileLevel_H264_Extended_AutoLevel as String
         case .H264_High_3_0:
             return kVTProfileLevel_H264_High_3_0 as String
         case .H264_High_3_1:

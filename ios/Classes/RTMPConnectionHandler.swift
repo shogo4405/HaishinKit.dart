@@ -7,6 +7,11 @@ final class RTMPConnectionHandler: NSObject, MethodCallHandler {
     private let plugin: SwiftHaishinKitPlugin
     private var channel: FlutterEventChannel?
     private var eventSink: FlutterEventSink?
+    private var subscription: Task<(), Error>? {
+        didSet {
+            oldValue?.cancel()
+        }
+    }
 
     init(plugin: SwiftHaishinKitPlugin) {
         self.plugin = plugin
@@ -18,43 +23,44 @@ final class RTMPConnectionHandler: NSObject, MethodCallHandler {
             self.channel = nil
         }
         instance = RTMPConnection()
-        instance?.addEventListener(.rtmpStatus, selector: #selector(handler), observer: self)
-        instance?.addEventListener(.ioError, selector: #selector(handler), observer: self)
         channel?.setStreamHandler(self)
     }
 
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        switch call.method {
-        case "RtmpConnection#connect":
-            guard
-                let arguments = call.arguments as? [String: Any?],
-                let command = arguments["command"] as? String else {
-                return
+        Task {
+            switch call.method {
+            case "RtmpConnection#connect":
+                guard
+                    let arguments = call.arguments as? [String: Any?],
+                    let command = arguments["command"] as? String else {
+                    return
+                }
+                if let instance {
+                    subscription = Task {
+                        for await status in await instance.status {
+                            eventSink?(status.makeEvent())
+                        }
+                    }
+                }
+                _ = try? await instance?.connect(command)
+                result(nil)
+            case "RtmpConnection#close":
+                subscription = nil
+                try? await instance?.close()
+                result(nil)
+            case "RtmpConnection#dispose":
+                instance = nil
+                plugin.onDispose(id: Int(bitPattern: ObjectIdentifier(self)))
+                result(nil)
+            default:
+                result(FlutterMethodNotImplemented)
             }
-            instance?.connect(command)
-        case "RtmpConnection#close":
-            instance?.close()
-        case "RtmpConnection#dispose":
-            instance = nil
-            plugin.onDispose(id: Int(bitPattern: ObjectIdentifier(self)))
-        default:
-            result(FlutterMethodNotImplemented)
         }
-    }
-
-    @objc
-    private func handler(_ notification: Notification) {
-        let event = Event.from(notification)
-        var map: [String: Any?] = [:]
-        map["type"] = event.type.rawValue
-        if let data = event.data {
-            map["data"] = ASObjectUtil.removeEmpty(data)
-        }
-        eventSink?(map)
     }
 }
 
 extension RTMPConnectionHandler: FlutterStreamHandler {
+    // MARK: FlutterStreamHandler
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = events
         return nil

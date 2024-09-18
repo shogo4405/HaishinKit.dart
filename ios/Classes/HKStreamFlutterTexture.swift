@@ -3,7 +3,7 @@ import Foundation
 import HaishinKit
 import AVFoundation
 
-final class IOStreamDrawableTexture: NSObject, FlutterTexture {
+final class HKStreamFlutterTexture: NSObject, FlutterTexture {
     static let defaultOptions: [String: Any] = [
         kCVPixelBufferCGImageCompatibilityKey as String: true,
         kCVPixelBufferCGBitmapContextCompatibilityKey as String: true,
@@ -18,12 +18,7 @@ final class IOStreamDrawableTexture: NSObject, FlutterTexture {
     private var currentSampleBuffer: CMSampleBuffer?
     private let registry: FlutterTextureRegistry
     private let context = CIContext()
-    private var queue = DispatchQueue(label: "com.haishinkit.NetStreamDrawableTexture")
-    private weak var currentStream: IOStream? {
-        didSet {
-            currentStream?.view = self
-        }
-    }
+    private var queue = DispatchQueue(label: "com.haishinkit.HKStreamFlutterTexture")
 
     init(registry: FlutterTextureRegistry) {
         self.registry = registry
@@ -79,20 +74,13 @@ final class IOStreamDrawableTexture: NSObject, FlutterTexture {
     }
 }
 
-extension IOStreamDrawableTexture: IOStreamView {
-    // MARK: - NetStreamDrawable
-    func attachStream(_ stream: IOStream?) {
-        if Thread.isMainThread {
-            currentStream = stream
-        } else {
-            DispatchQueue.main.async {
-                self.currentStream = stream
-            }
-        }
+extension HKStreamFlutterTexture: HKStreamOutput {
+    // MARK: HKStreamOutput
+    func stream(_ stream: some HaishinKit.HKStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
     }
 
-    func enqueue(_ sampleBuffer: CMSampleBuffer?) {
-        currentSampleBuffer = sampleBuffer
-        self.registry.textureFrameAvailable(id)
+    func stream(_ stream: some HaishinKit.HKStream, didOutput video: CMSampleBuffer) {
+        self.currentSampleBuffer = video
+        registry.textureFrameAvailable(id)
     }
 }

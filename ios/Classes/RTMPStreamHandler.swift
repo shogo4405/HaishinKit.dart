@@ -6,10 +6,12 @@ import VideoToolbox
 
 final class RTMPStreamHandler: NSObject, MethodCallHandler {
     private let plugin: SwiftHaishinKitPlugin
+    private var mixer: MediaMixer = .init()
+    private var texture: HKStreamFlutterTexture?
     private var instance: RTMPStream?
-    private var eventChannel: FlutterEventChannel?
     private var eventSink: FlutterEventSink?
-    private var textureId: Int64?
+    private var eventChannel: FlutterEventChannel?
+    private var subscription: Task<(), Error>?
 
     init(plugin: SwiftHaishinKitPlugin, handler: RTMPConnectionHandler) {
         self.plugin = plugin
@@ -21,221 +23,211 @@ final class RTMPStreamHandler: NSObject, MethodCallHandler {
         } else {
             self.eventChannel = nil
         }
-
         if let connection = handler.instance {
             let instance = RTMPStream(connection: connection)
-            instance.addEventListener(.rtmpStatus, selector: #selector(RTMPStreamHandler.handler), observer: self)
             if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
-                instance.videoOrientation = orientation
+                Task { await mixer.setVideoOrientation(orientation) }
             }
             NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
             self.instance = instance
         }
+        Task {
+            if let instance {
+                await mixer.addOutput(instance)
+            }
+        }
     }
 
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard
-            let arguments = call.arguments as? [String: Any?] else {
-            result(nil)
-            return
-        }
-        switch call.method {
-        case "RtmpStream#getHasAudio":
-            if let instance {
-                result(!instance.audioMixerSettings.isMuted)
-            } else {
-                result(nil)
-            }
-        case "RtmpStream#setHasAudio":
-            guard let hasAudio = arguments["value"] as? Bool else {
-                result(nil)
-                return
-            }
-            instance?.audioMixerSettings.isMuted = !hasAudio
-            result(nil)
-        case "RtmpStream#getHasVudio":
-            if let instance {
-                result(!instance.videoMixerSettings.isMuted)
-            } else {
-                result(nil)
-            }
-        case "RtmpStream#setHasVudio":
-            guard let hasVideo = arguments["value"] as? Bool else {
-                result(nil)
-                return
-            }
-            instance?.videoMixerSettings.isMuted = !hasVideo
-            result(nil)
-        case "RtmpStream#setFrameRate":
+        Task {
             guard
-                let frameRate = arguments["value"] as? NSNumber else {
+                let arguments = call.arguments as? [String: Any?] else {
                 result(nil)
                 return
             }
-            instance?.frameRate = frameRate.doubleValue
-            result(nil)
-        case "RtmpStream#setSessionPreset":
-            guard let sessionPreset = arguments["value"] as? String else {
+            switch call.method {
+            case "RtmpStream#getHasAudio":
+                result(await !mixer.audioMixerSettings.isMuted)
+            case "RtmpStream#setHasAudio":
+                guard let hasAudio = arguments["value"] as? Bool else {
+                    result(nil)
+                    return
+                }
+                var audioMixerSettings = await mixer.audioMixerSettings
+                audioMixerSettings.isMuted = !hasAudio
+                await mixer.setAudioMixerSettings(audioMixerSettings)
                 result(nil)
-                return
-            }
-            switch sessionPreset {
-            case "high":
-                instance?.sessionPreset = .high
-            case "medium":
-                instance?.sessionPreset = .medium
-            case "low":
-                instance?.sessionPreset = .low
-            case "hd1280x720":
-                instance?.sessionPreset = .hd1280x720
-            case "hd1920x1080":
-                instance?.sessionPreset = .hd1920x1080
-            case "hd4K3840x2160":
-                instance?.sessionPreset = .hd4K3840x2160
-            case "vga640x480":
-                instance?.sessionPreset = .vga640x480
-            case "iFrame960x540":
-                instance?.sessionPreset = .iFrame960x540
-            case "iFrame1280x720":
-                instance?.sessionPreset = .iFrame1280x720
-            case "cif352x288":
-                instance?.sessionPreset = .cif352x288
-            default:
-                instance?.sessionPreset = AVCaptureSession.Preset.hd1280x720
-            }
-            result(nil)
-        case "RtmpStream#setAudioSettings":
-            guard
-                let settings = arguments["settings"] as? [String: Any?] else {
+            case "RtmpStream#getHasVudio":
+                result(await !mixer.videoMixerSettings.isMuted)
+            case "RtmpStream#setHasVudio":
+                guard let hasVideo = arguments["value"] as? Bool else {
+                    result(nil)
+                    return
+                }
+                var videoMixerSettings = await mixer.videoMixerSettings
+                videoMixerSettings.isMuted = !hasVideo
+                await mixer.setVideoMixerSettings(videoMixerSettings)
                 result(nil)
-                return
-            }
-            if let bitrate = settings["bitrate"] as? NSNumber {
-                instance?.audioSettings.bitRate = bitrate.intValue
-            }
-            result(nil)
-        case "RtmpStream#setVideoSettings":
-            guard
-                let settings = arguments["settings"] as? [String: Any?] else {
+            case "RtmpStream#setFrameRate":
+                guard
+                    let frameRate = arguments["value"] as? NSNumber else {
+                    result(nil)
+                    return
+                }
+                await mixer.setFrameRate(frameRate.doubleValue)
                 result(nil)
-                return
-            }
-            if let bitrate = settings["bitrate"] as? NSNumber {
-                instance?.videoSettings.bitRate = bitrate.intValue
-            }
-            if let width = settings["width"] as? NSNumber, let height = settings["height"] as? NSNumber {
-                instance?.videoSettings.videoSize = .init(width: .init(width.intValue), height: .init(height.intValue))
-            }
-            if let frameInterval = settings["frameInterval"] as? NSNumber {
-                instance?.videoSettings.maxKeyFrameIntervalDuration = frameInterval.int32Value
-            }
-            if let profileLevel = settings["profileLevel"] as? String {
-                instance?.videoSettings.profileLevel = ProfileLevel(rawValue: profileLevel)?.kVTProfileLevel ?? ProfileLevel.H264_Baseline_AutoLevel.kVTProfileLevel
-            }
-            result(nil)
-        case "RtmpStream#setScreenSettings":
-            result(nil)
-        case "RtmpStream#attachAudio":
-            let source = arguments["source"] as? [String: Any?]
-            if source == nil {
-                instance?.attachAudio(nil)
-            } else {
-                instance?.attachAudio(AVCaptureDevice.default(for: .audio))
-            }
-            result(nil)
-        case "RtmpStream#attachVideo":
-            let source = arguments["source"] as? [String: Any?]
-            if source == nil {
-                instance?.attachCamera(nil, track: 0)
-            } else {
-                var devicePosition = AVCaptureDevice.Position.back
-                if let position = source?["position"] as? String {
-                    switch position {
-                    case "front":
-                        devicePosition = .front
-                    case "back":
-                        devicePosition = .back
-                    default:
-                        break
+            case "RtmpStream#setSessionPreset":
+                guard let sessionPreset = arguments["value"] as? String else {
+                    result(nil)
+                    return
+                }
+                switch sessionPreset {
+                case "high":
+                    await mixer.setSessionPreset(.high)
+                case "medium":
+                    await mixer.setSessionPreset(.medium)
+                case "low":
+                    await mixer.setSessionPreset(.low)
+                case "hd1280x720":
+                    await mixer.setSessionPreset(.hd1280x720)
+                case "hd1920x1080":
+                    await mixer.setSessionPreset(.hd1920x1080)
+                case "hd4K3840x2160":
+                    await mixer.setSessionPreset(.hd4K3840x2160)
+                case "vga640x480":
+                    await mixer.setSessionPreset(.vga640x480)
+                case "iFrame960x540":
+                    await mixer.setSessionPreset(.iFrame960x540)
+                case "iFrame1280x720":
+                    await mixer.setSessionPreset(.iFrame1280x720)
+                case "cif352x288":
+                    await mixer.setSessionPreset(.cif352x288)
+                default:
+                    await mixer.setSessionPreset(AVCaptureSession.Preset.hd1280x720)
+                }
+                result(nil)
+            case "RtmpStream#setAudioSettings":
+                guard
+                    let settings = arguments["settings"] as? [String: Any?] else {
+                    result(nil)
+                    return
+                }
+                if let bitrate = settings["bitrate"] as? NSNumber {
+                    var audioSettings = await instance?.audioSettings ?? .default
+                    audioSettings.bitRate = bitrate.intValue
+                    await instance?.setAudioSettings(audioSettings)
+                }
+                result(nil)
+            case "RtmpStream#setVideoSettings":
+                guard
+                    let settings = arguments["settings"] as? [String: Any?] else {
+                    result(nil)
+                    return
+                }
+                var videoSettings = await instance?.videoSettings ?? .default
+                if let bitrate = settings["bitrate"] as? NSNumber {
+                    videoSettings.bitRate = bitrate.intValue
+                }
+                if let width = settings["width"] as? NSNumber, let height = settings["height"] as? NSNumber {
+                    videoSettings.videoSize = CGSize(width: .init(width.intValue), height: .init(height.intValue))
+                }
+                if let frameInterval = settings["frameInterval"] as? NSNumber {
+                    videoSettings.maxKeyFrameIntervalDuration = frameInterval.int32Value
+                }
+                if let profileLevel = settings["profileLevel"] as? String {
+                    videoSettings.profileLevel = ProfileLevel(rawValue: profileLevel)?.kVTProfileLevel ?? ProfileLevel.H264_Baseline_AutoLevel.kVTProfileLevel
+                }
+                await instance?.setVideoSettings(videoSettings)
+                result(nil)
+            case "RtmpStream#setScreenSettings":
+                result(nil)
+            case "RtmpStream#attachAudio":
+                let source = arguments["source"] as? [String: Any?]
+                if source == nil {
+                    try? await mixer.attachAudio(nil)
+                } else {
+                    try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
+                }
+                result(nil)
+            case "RtmpStream#attachVideo":
+                let source = arguments["source"] as? [String: Any?]
+                if source == nil {
+                    try? await mixer.attachVideo(nil, track: 0)
+                } else {
+                    var devicePosition = AVCaptureDevice.Position.back
+                    if let position = source?["position"] as? String {
+                        switch position {
+                        case "front":
+                            devicePosition = .front
+                        case "back":
+                            devicePosition = .back
+                        default:
+                            break
+                        }
+                    }
+                    if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: devicePosition) {
+                        try? await mixer.attachVideo(device, track: 0)
                     }
                 }
-                if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: devicePosition) {
-                    instance?.attachCamera(device, track: 0)
+                result(nil)
+            case "RtmpStream#play":
+                _ = try? await instance?.play(arguments["name"] as? String)
+                result(nil)
+            case "RtmpStream#publish":
+                _ = try? await instance?.publish(arguments["name"] as? String)
+                result(nil)
+            case "RtmpStream#registerTexture":
+                guard
+                    let registry = plugin.registrar?.textures() else {
+                    result(nil)
+                    return
                 }
-            }
-            result(nil)
-        case "RtmpStream#play":
-            instance?.play(arguments["name"] as? String)
-            result(nil)
-        case "RtmpStream#publish":
-            instance?.publish(arguments["name"] as? String)
-            result(nil)
-        case "RtmpStream#registerTexture":
-            guard
-                let registry = plugin.registrar?.textures() else {
-                result(nil)
-                return
-            }
-            if instance?.view == nil && self.textureId == nil {
-                let texture = IOStreamDrawableTexture(registry: registry)
-                if let instance = instance {
-                    texture.attachStream(instance)
+                if let texture {
+                    result(texture.id)
+                } else {
+                    let texture = HKStreamFlutterTexture(registry: registry)
+                    self.texture = texture
+                    await instance?.addOutput(texture)
+                    result(texture.id)
                 }
-                self.textureId = texture.id
-
-                result(self.textureId)
-            } else {
-
-                result(self.textureId)
-            }
-        case "RtmpStream#unregisterTexture":
-            guard
-                let registry = plugin.registrar?.textures() else {
-                result(nil)
-                return
-            }
-            if let textureId = arguments["id"] as? Int64 {
-                registry.unregisterTexture(textureId)
-            }
-            result(nil)
-        case "RtmpStream#updateTextureSize":
-            guard
-                (plugin.registrar?.textures()) != nil else {
-                result(nil)
-                return
-            }
-            if let texture = instance?.view as? IOStreamDrawableTexture {
-                if let width = arguments["width"] as? NSNumber,
-                   let height = arguments["height"] as? NSNumber {
-                    texture.bounds = CGSize(width: width.doubleValue, height: height.doubleValue)
+            case "RtmpStream#unregisterTexture":
+                guard
+                    let registry = plugin.registrar?.textures() else {
+                    result(nil)
+                    return
                 }
-                result(texture.id)
-            } else {
+                if let textureId = arguments["id"] as? Int64 {
+                    registry.unregisterTexture(textureId)
+                }
                 result(nil)
+            case "RtmpStream#updateTextureSize":
+                guard
+                    (plugin.registrar?.textures()) != nil else {
+                    result(nil)
+                    return
+                }
+                if let texture {
+                    if let width = arguments["width"] as? NSNumber,
+                       let height = arguments["height"] as? NSNumber {
+                        texture.bounds = CGSize(width: width.doubleValue, height: height.doubleValue)
+                    }
+                    result(texture.id)
+                } else {
+                    result(nil)
+                }
+            case "RtmpStream#close":
+                _ = try? await instance?.close()
+                result(nil)
+            case "RtmpStream#dispose":
+                await mixer.stopRunning()
+                _ = try? await instance?.close()
+                instance = nil
+                plugin.onDispose(id: Int(bitPattern: ObjectIdentifier(self)))
+                result(nil)
+            default:
+                result(FlutterMethodNotImplemented)
             }
-        case "RtmpStream#close":
-            instance?.close()
-            result(nil)
-        case "RtmpStream#dispose":
-            instance?.removeEventListener(.rtmpStatus, selector: #selector(handler))
-            instance?.close()
-            instance = nil
-            plugin.onDispose(id: Int(bitPattern: ObjectIdentifier(self)))
-            result(nil)
-        default:
-            result(FlutterMethodNotImplemented)
         }
-    }
-
-    @objc
-    private func handler(_ notification: Notification) {
-        let event = Event.from(notification)
-        var map: [String: Any?] = [:]
-        map["type"] = event.type.rawValue
-        if let data = event.data {
-            map["data"] = ASObjectUtil.removeEmpty(data)
-        }
-        eventSink?(map)
     }
 
     @objc
@@ -243,11 +235,12 @@ final class RTMPStreamHandler: NSObject, MethodCallHandler {
         guard let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) else {
             return
         }
-        instance?.videoOrientation = orientation
+        Task { await mixer.setVideoOrientation(orientation) }
     }
 }
 
 extension RTMPStreamHandler: FlutterStreamHandler {
+    // MARK: FlutterStreamHandler
     public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = events
         return nil
