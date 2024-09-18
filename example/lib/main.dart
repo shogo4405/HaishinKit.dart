@@ -14,7 +14,7 @@ import 'package:haishin_kit_example/models/live_stream_state.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
-  const String server = "rtmp://192.168.1.3/live";
+  const String server = "rtmp://192.168.1.6/live";
   const streamKey = "live";
 
   runApp(
