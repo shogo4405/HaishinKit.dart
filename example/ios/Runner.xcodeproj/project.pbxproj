@@ -181,13 +181,13 @@
 		BC781CD6287259FB00DE3021 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BC0207CE2913A64E00A0B3DF /* audio_session */,
-				BC781CDF287259FB00DE3021 /* haishin_kit */,
-				BC781CE1287259FB00DE3021 /* HaishinKit */,
-				BC781CE3287259FB00DE3021 /* Logboard */,
-				BC781CE5287259FB00DE3021 /* permission_handler_apple */,
-				BC98555F2CB039F800488DA2 /* permission_handler_apple-permission_handler_apple_privacy */,
-				BC781CE7287259FB00DE3021 /* Pods-Runner */,
+				BC0207CE2913A64E00A0B3DF /* audio_session.framework */,
+				BC781CDF287259FB00DE3021 /* haishin_kit.framework */,
+				BC781CE1287259FB00DE3021 /* HaishinKit.framework */,
+				BC781CE3287259FB00DE3021 /* Logboard.framework */,
+				BC781CE5287259FB00DE3021 /* permission_handler_apple.framework */,
+				BC98555F2CB039F800488DA2 /* permission_handler_apple_privacy.bundle */,
+				BC781CE7287259FB00DE3021 /* Pods_Runner.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -258,58 +258,51 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		BC0207CE2913A64E00A0B3DF /* audio_session */ = {
+		BC0207CE2913A64E00A0B3DF /* audio_session.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			name = audio_session;
 			path = audio_session.framework;
 			remoteRef = BC0207CD2913A64E00A0B3DF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		BC781CDF287259FB00DE3021 /* haishin_kit */ = {
+		BC781CDF287259FB00DE3021 /* haishin_kit.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			name = haishin_kit;
 			path = haishin_kit.framework;
 			remoteRef = BC781CDE287259FB00DE3021 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		BC781CE1287259FB00DE3021 /* HaishinKit */ = {
+		BC781CE1287259FB00DE3021 /* HaishinKit.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			name = HaishinKit;
 			path = HaishinKit.framework;
 			remoteRef = BC781CE0287259FB00DE3021 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		BC781CE3287259FB00DE3021 /* Logboard */ = {
+		BC781CE3287259FB00DE3021 /* Logboard.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			name = Logboard;
 			path = Logboard.framework;
 			remoteRef = BC781CE2287259FB00DE3021 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		BC781CE5287259FB00DE3021 /* permission_handler_apple */ = {
+		BC781CE5287259FB00DE3021 /* permission_handler_apple.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			name = permission_handler_apple;
 			path = permission_handler_apple.framework;
 			remoteRef = BC781CE4287259FB00DE3021 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		BC781CE7287259FB00DE3021 /* Pods-Runner */ = {
+		BC781CE7287259FB00DE3021 /* Pods_Runner.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			name = "Pods-Runner";
 			path = Pods_Runner.framework;
 			remoteRef = BC781CE6287259FB00DE3021 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		BC98555F2CB039F800488DA2 /* permission_handler_apple-permission_handler_apple_privacy */ = {
+		BC98555F2CB039F800488DA2 /* permission_handler_apple_privacy.bundle */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			name = "permission_handler_apple-permission_handler_apple_privacy";
 			path = permission_handler_apple_privacy.bundle;
 			remoteRef = BC98555E2CB039F800488DA2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
