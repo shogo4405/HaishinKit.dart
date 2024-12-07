@@ -10,7 +10,7 @@ final class HKStreamFlutterTexture: NSObject, FlutterTexture {
         kCVPixelBufferIOSurfacePropertiesKey as String: NSDictionary()
     ]
 
-    var id: Int64 = 0
+    private(set) var id: Int64 = 0
     var bounds: CGSize = .zero
     var videoGravity: AVLayerVideoGravity = .resizeAspectFill
     var videoOrientation: AVCaptureVideoOrientation = .portrait
