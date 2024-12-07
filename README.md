@@ -6,7 +6,7 @@
 
 |                | Android | iOS       | 
 |----------------|---------|-----------|
-| **Support**    | SDK 21+ | iOS 12.0+ |
+| **Support**    | SDK 21+ | iOS 13.0+ |
 
 # 🌏 Dependencies
 
