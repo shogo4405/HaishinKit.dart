@@ -114,6 +114,19 @@ extension MediaMixerHandler: MethodCallHandler {
                     try? await instance.attachAudio(AVCaptureDevice.default(for: .audio))
                 }
                 result(nil)
+            case "RtmpStream#setScreenSettings":
+                guard
+                    let settings = arguments["settings"] as? [String: Any?],
+                    let width = settings["width"] as? NSNumber,
+                    let height = settings["height"] as? NSNumber else {
+                    result(nil)
+                    return
+                }
+                Task { @ScreenActor in
+                    instance.screen.size = CGSize(width: CGFloat(width.floatValue), height: CGFloat(height.floatValue))
+                    print(instance.screen.size)
+                    result(nil)
+                }
             case "RtmpStream#attachVideo":
                 let source = arguments["source"] as? [String: Any?]
                 if source == nil {

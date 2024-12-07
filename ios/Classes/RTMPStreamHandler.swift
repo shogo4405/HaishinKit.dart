@@ -4,7 +4,7 @@ import HaishinKit
 import AVFoundation
 import VideoToolbox
 
-final class RTMPStreamHandler: NSObject, MethodCallHandler {
+final class RTMPStreamHandler: NSObject {
     private let plugin: SwiftHaishinKitPlugin
     private var texture: HKStreamFlutterTexture?
     private var instance: RTMPStream?
@@ -28,7 +28,10 @@ final class RTMPStreamHandler: NSObject, MethodCallHandler {
             self.instance = instance
         }
     }
+}
 
+extension RTMPStreamHandler: MethodCallHandler {
+    // MARK: MethodCallHandler
     func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         Task {
             guard
@@ -45,7 +48,8 @@ final class RTMPStreamHandler: NSObject, MethodCallHandler {
                 "RtmpStream#setFrameRate",
                 "RtmpStream#setSessionPreset",
                 "RtmpStream#attachAudio",
-                "RtmpStream#attachVideo":
+                "RtmpStream#attachVideo",
+                "RtmpStream#setScreenSettings":
                 plugin.mixer?.handle(call, result: result)
             case "RtmpStream#setAudioSettings":
                 guard
