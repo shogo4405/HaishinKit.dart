@@ -124,7 +124,6 @@ extension MediaMixerHandler: MethodCallHandler {
                 }
                 Task { @ScreenActor in
                     instance.screen.size = CGSize(width: CGFloat(width.floatValue), height: CGFloat(height.floatValue))
-                    print(instance.screen.size)
                     result(nil)
                 }
             case "RtmpStream#attachVideo":
