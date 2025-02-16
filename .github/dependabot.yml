@@ -2,6 +2,6 @@ version: 2
 enable-beta-ecosystems: true
 updates:
   - package-ecosystem: "pub"
-    directory: "example"
+    directory: "/"
     schedule:
       interval: "weekly"
