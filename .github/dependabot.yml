@@ -1,6 +1,13 @@
 version: 2
-enable-beta-ecosystems: true
 updates:
+  - package-ecosystem: "gradle"
+    directory: "/android"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "swift"
+    directory: "/ios"
+    schedule:
+      interval: "weekly"
   - package-ecosystem: "pub"
     directory: "/"
     schedule:
