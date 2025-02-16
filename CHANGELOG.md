@@ -1,5 +1,6 @@
 ## 0.14.1
 * Bump up HaishinKit.swift to 2.0.4
+* Bump up HaishinKit.kt to 0.14.2
 
 ## 0.14.0
 * Bump up HaishinKit.kt to 0.14.1
