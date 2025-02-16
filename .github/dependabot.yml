@@ -4,10 +4,6 @@ updates:
     directory: "/android"
     schedule:
       interval: "weekly"
-  - package-ecosystem: "swift"
-    directory: "/ios"
-    schedule:
-      interval: "weekly"
   - package-ecosystem: "pub"
     directory: "/"
     schedule:
