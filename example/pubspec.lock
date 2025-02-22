@@ -10,7 +10,7 @@ packages:
     source: hosted
     version: "2.12.0"
   audio_session:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: audio_session
       sha256: "2b7fff16a552486d078bfc09a8cde19f426dc6d6329262b684182597bec5b1ac"
@@ -183,7 +183,7 @@ packages:
     source: hosted
     version: "1.9.1"
   permission_handler:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: permission_handler
       sha256: "18bf33f7fefbd812f37e72091a15575e72d5318854877e0e4035a24ac1113ecb"

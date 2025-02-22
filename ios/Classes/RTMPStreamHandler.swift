@@ -5,14 +5,14 @@ import AVFoundation
 import VideoToolbox
 
 final class RTMPStreamHandler: NSObject {
-    private let plugin: SwiftHaishinKitPlugin
+    private let plugin: HaishinKitPlugin
     private var texture: HKStreamFlutterTexture?
     private var instance: RTMPStream?
     private var eventSink: FlutterEventSink?
     private var eventChannel: FlutterEventChannel?
     private var subscription: Task<(), Error>?
 
-    init(plugin: SwiftHaishinKitPlugin, handler: RTMPConnectionHandler) {
+    init(plugin: HaishinKitPlugin, handler: RTMPConnectionHandler) {
         self.plugin = plugin
         super.init()
         let id = Int(bitPattern: ObjectIdentifier(self))

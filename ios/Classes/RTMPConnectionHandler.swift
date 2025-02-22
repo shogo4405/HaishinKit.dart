@@ -4,7 +4,7 @@ import HaishinKit
 
 final class RTMPConnectionHandler: NSObject, MethodCallHandler {
     var instance: RTMPConnection?
-    private let plugin: SwiftHaishinKitPlugin
+    private let plugin: HaishinKitPlugin
     private var channel: FlutterEventChannel?
     private var eventSink: FlutterEventSink?
     private var subscription: Task<(), Error>? {
@@ -13,7 +13,7 @@ final class RTMPConnectionHandler: NSObject, MethodCallHandler {
         }
     }
 
-    init(plugin: SwiftHaishinKitPlugin) {
+    init(plugin: HaishinKitPlugin) {
         self.plugin = plugin
         super.init()
         let id = Int(bitPattern: ObjectIdentifier(self))

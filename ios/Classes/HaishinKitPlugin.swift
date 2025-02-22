@@ -2,8 +2,8 @@ import Flutter
 import UIKit
 import HaishinKit
 
-public class HaishinKitPlugin: NSObject {
-    public static let instance = SwiftHaishinKitPlugin()
+public final class HaishinKitPlugin: NSObject {
+    private static let instance = HaishinKitPlugin()
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         instance.registrar = registrar
@@ -31,7 +31,7 @@ public class HaishinKitPlugin: NSObject {
     }
 }
 
-extension SwiftHaishinKitPlugin: FlutterPlugin {
+extension HaishinKitPlugin: FlutterPlugin {
     // MARK: FlutterPlugin
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if let memory = (call.arguments as? [String: Any?])?["memory"] as? NSNumber {
