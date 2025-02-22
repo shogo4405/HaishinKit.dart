@@ -1,21 +1,24 @@
 name: Check and test the source code
 on:
- pull_request:
-  branches:
-   - main
+  pull_request:
+    branches:
+      - main
 jobs:
- test:
-  name: Check the source code
-  runs-on: ubuntu-latest
-  steps:
-   - uses: actions/checkout@v3
-   - uses: subosito/flutter-action@v2.3.0
-     with:
-      flutter-version: '3.24.5'
-   - name: Install packages
-     run: flutter pub get
-   - name: Linter
-     run: flutter analyze
-   - name: Test
-     run: flutter test
-
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup flutter
+        uses: subosito/flutter-action@v2.3.0
+        with:
+          flutter-version: '3.24.5'
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0.6
+          bundler-cache: true
+      - name: Fastlane
+        env:
+          DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          bundle exec fastlane review
