@@ -19,7 +19,7 @@ class MethodChannelHaishinKit extends HaishinKitPlatform {
   }
 
   @override
-  Future<String?> getVersion() async {
-    return await channel.invokeMethod<String>('getVersion');
+  Future<String?> getPlatformVersion() async {
+    return await channel.invokeMethod<String>('getPlatformVersion');
   }
 }

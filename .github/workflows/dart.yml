@@ -12,7 +12,7 @@ jobs:
         uses: subosito/flutter-action@v2.3.0
         with:
           flutter-version: '3.24.5'
-      - name: setup ruby
+      - name: Setup ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.0.6

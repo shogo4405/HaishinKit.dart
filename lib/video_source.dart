@@ -34,7 +34,7 @@ class VideoSource {
 
   Map<String, dynamic> toMap() {
     return {
-      'position': this.position.name,
+      'position': position.name,
     };
   }
 
