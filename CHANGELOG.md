@@ -1,3 +1,6 @@
+## 0.14.2
+* fixed https://github.com/shogo4405/HaishinKit.dart/issues/78
+
 ## 0.14.1
 * Bump up HaishinKit.swift to 2.0.4
 * Bump up HaishinKit.kt to 0.14.2
