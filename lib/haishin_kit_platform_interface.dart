@@ -31,7 +31,7 @@ abstract class HaishinKitPlatform extends PlatformInterface {
   }
 
   /// Gets the HaishinKit library version.
-  Future<String?> getVersion() {
-    throw UnimplementedError('getVersion() has not been implemented.');
+  Future<String?> getPlatformVersion() {
+    throw UnimplementedError('getPlatformVersion() has not been implemented.');
   }
 }

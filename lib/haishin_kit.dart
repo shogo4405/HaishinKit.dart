@@ -11,7 +11,7 @@ class HaishinKit {
     return HaishinKitPlatform.instance.newRtmpConnection();
   }
 
-  Future<String?> getVersion() {
-    return HaishinKitPlatform.instance.getVersion();
+  Future<String?> getPlatformVersion() {
+    return HaishinKitPlatform.instance.getPlatformVersion();
   }
 }

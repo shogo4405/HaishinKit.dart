@@ -55,7 +55,7 @@ class HaishinKitPlugin : FlutterPlugin, MethodCallHandler {
                 result.success(handler.hashCode())
             }
 
-            "getVersion" -> {
+            "getPlatformVersion" -> {
                 result.success(com.haishinkit.BuildConfig.VERSION_NAME)
             }
 
