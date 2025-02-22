@@ -33,3 +33,4 @@ doc/api/
 !.idea/modules.xml
 !.idea/vcs.xml
 !haishin_kit.iml
+fastlane/report.xml

@@ -1,0 +1,14 @@
+desc "[CI] Review PullRequest."
+lane :review do
+  begin
+    sh('flutter pub get')
+    sh('flutter analyze > ../flutter_analyze_report.txt')
+    danger(
+      danger_id: 'danger',
+      dangerfile: 'Dangerfile',
+      verbose: true
+    )
+  rescue
+  end
+end
+
